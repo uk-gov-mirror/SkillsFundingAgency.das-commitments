@@ -88,6 +88,32 @@ namespace SFA.DAS.CommitmentPayments.WebJob.Updater
 
                 _logger.Info($"{page.Count} records returned in page");
 
+                //todo: unroll loop - issue: uncaught exception currently will leave 1 datalockstatus process in an undefined state. if we unroll, could leave a whole page in a bad state
+                // run all in a transaction? make locking worse? parallel async?
+
+                // batch size (0==whole page)
+
+                // A) store original datalocksuccess & apply whitelist for all in batch
+
+                // B) update all in batch with single tvp call
+
+                // C) filter all
+
+                // D) update hashaddatalocksuccess (tvp app ids)
+
+                // E) expire pending updates for all
+
+                // dependencies/concurrency
+
+                // A -> B -> C
+                //   -> D
+                //   -> E
+
+                // A
+                // async B, async D, async E
+                // await B, async C
+                // when all C, D, E
+
                 foreach (var dataLockStatus in page)
                 {
                     _logger.Info($"Read datalock Apprenticeship {dataLockStatus.ApprenticeshipId} " +
@@ -116,6 +142,9 @@ namespace SFA.DAS.CommitmentPayments.WebJob.Updater
                             //where ApprenticeshipId = @ApprenticeshipId
                             //and PriceEpisodeIdentifier = @PriceEpisodeIdentifier
                             await _dataLockRepository.UpdateDataLockStatus(dataLockStatus);
+
+                            //todo: we could batch all the updates, then batch filter, but not good if job fails after update batch - filtering will be missed
+                            // but as it stands, each filter could fail (throw) and you're in the same situation (as the exception is swallowed)
 
                             await _filterAcademicYearRolloverDataLocks.Filter(dataLockStatus.ApprenticeshipId);
                         }
