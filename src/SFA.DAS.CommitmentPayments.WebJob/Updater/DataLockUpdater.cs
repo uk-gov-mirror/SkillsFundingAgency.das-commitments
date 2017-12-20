@@ -114,6 +114,11 @@ namespace SFA.DAS.CommitmentPayments.WebJob.Updater
                 // await B, async C
                 // when all C, D, E
 
+                // plan:
+                // loop unroll + tvp calls to db
+                // GetPendingApprenticeshipUpdateCostAndTrainingCode
+                // don't return current datalock in filter
+
                 foreach (var dataLockStatus in page)
                 {
                     _logger.Info($"Read datalock Apprenticeship {dataLockStatus.ApprenticeshipId} " +
