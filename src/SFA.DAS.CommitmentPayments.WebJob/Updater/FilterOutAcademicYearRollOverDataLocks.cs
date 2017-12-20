@@ -31,7 +31,8 @@ namespace SFA.DAS.CommitmentPayments.WebJob.Updater
 
             var apprenticeshipDataLocks = await _dataLockRepository.GetDataLocks(apprenticeshipId, true);
 
-            if (apprenticeshipDataLocks == null || apprenticeshipDataLocks.Count == 0) //todo: i think we should always get the one we just created/updated
+            //todo: as is we could apprenticeshipDataLocks.Count < 2, as if only 1, there isn't going to be a duplicate
+            if (apprenticeshipDataLocks == null || apprenticeshipDataLocks.Count == 0)
                 return;
 
             var haveDuplicates = apprenticeshipDataLocks
