@@ -97,7 +97,7 @@ namespace SFA.DAS.CommitmentPayments.WebJob.Updater
 
                 // B) update all in batch with single tvp call
 
-                // C) filter all
+                // C) filter all (not an actual dependency if we pass the existing datalock status and don't retrieve it from the db)
 
                 // D) update hashaddatalocksuccess (tvp app ids)
 
@@ -114,10 +114,19 @@ namespace SFA.DAS.CommitmentPayments.WebJob.Updater
                 // await B, async C
                 // when all C, D, E
 
+                // A -> B
+                //   -> C
+                //   -> D
+                //   -> E
+
                 // plan:
                 // loop unroll + tvp calls to db
                 // GetPendingApprenticeshipUpdateCostAndTrainingCode
                 // don't return current datalock in filter
+
+                // notes: different batch sizes for different bits? e.g. D page batch size, B batch < page
+                // what determines page size? can we use page size as the batch size?
+                // * the parallelism and batching should speed up the process, but could make the experience for interactive users worse! 
 
                 foreach (var dataLockStatus in page)
                 {
