@@ -44,7 +44,7 @@ namespace SFA.DAS.Commitments.Infrastructure.Data
             });
         }
 
-        public async Task<long> UpdateDataLockStatus(DataLockStatus dataLockStatus)
+        public async Task<long> UpdateDataLockStatusAsync(DataLockStatus dataLockStatus)
         {
             _logger.Info($"Updating or inserting data lock status {dataLockStatus.DataLockEventId}, EventsStatus: {dataLockStatus.EventStatus}");
             try
@@ -78,6 +78,29 @@ namespace SFA.DAS.Commitments.Infrastructure.Data
 
                 return result;
             }
+            catch (Exception ex) when (ex.InnerException is SqlException && IsConstraintError(ex.InnerException as SqlException))
+            {
+                throw new RepositoryConstraintException("Unable to insert datalockstatus record", ex);
+            }
+        }
+
+        public async Task UpsertDataLockStatusesAsync(IEnumerable<DataLockStatus> dataLockStatuses)
+        {
+            _logger.Info($"");
+            try
+            {
+                // what does this return??
+                await WithConnection(async connection =>
+                {
+                    var command = new SqlCommand("[dbo].[UpsertDataLockStatuses]", connection);
+                    var tvpParam = command.Parameters.AddWithValue("@DataLockStatusTable", dataLockStatuses);
+                    tvpParam.SqlDbType = SqlDbType.Structured;
+                    tvpParam.TypeName = "[dbo].[DataLockStatusTableType]";
+
+                    return await command.ExecuteNonQueryAsync();
+                });
+            }
+            //todo: need to check error handling of new sp
             catch (Exception ex) when (ex.InnerException is SqlException && IsConstraintError(ex.InnerException as SqlException))
             {
                 throw new RepositoryConstraintException("Unable to insert datalockstatus record", ex);

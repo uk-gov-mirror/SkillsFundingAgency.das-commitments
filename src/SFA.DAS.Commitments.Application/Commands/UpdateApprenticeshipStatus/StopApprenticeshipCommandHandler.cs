@@ -111,7 +111,7 @@ namespace SFA.DAS.Commitments.Application.Commands.UpdateApprenticeshipStatus
                 foreach (var dataLock in dataLocks)
                 {
                     dataLock.IsResolved = true;
-                    await _dataLockRepository.UpdateDataLockStatus(dataLock);
+                    await _dataLockRepository.UpdateDataLockStatusAsync(dataLock);
                 }
             }
         }

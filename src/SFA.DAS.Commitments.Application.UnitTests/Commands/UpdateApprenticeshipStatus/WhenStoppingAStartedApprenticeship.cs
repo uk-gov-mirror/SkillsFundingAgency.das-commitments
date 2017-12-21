@@ -134,7 +134,7 @@ namespace SFA.DAS.Commitments.Application.UnitTests.Commands.UpdateApprenticeshi
 
             await Handler.Handle(ExampleValidRequest);
 
-            MockDataLockRepository.Verify(x => x.UpdateDataLockStatus(It.Is<DataLockStatus>(a => a.IsResolved)),
+            MockDataLockRepository.Verify(x => x.UpdateDataLockStatusAsync(It.Is<DataLockStatus>(a => a.IsResolved)),
                 Times.Once);
         }
 
@@ -215,7 +215,7 @@ namespace SFA.DAS.Commitments.Application.UnitTests.Commands.UpdateApprenticeshi
 
             await Handler.Handle(ExampleValidRequest);
 
-            MockDataLockRepository.Verify(x => x.UpdateDataLockStatus(It.Is<DataLockStatus>(a => a.IsResolved)),
+            MockDataLockRepository.Verify(x => x.UpdateDataLockStatusAsync(It.Is<DataLockStatus>(a => a.IsResolved)),
                 Times.Exactly(3));
         }
 

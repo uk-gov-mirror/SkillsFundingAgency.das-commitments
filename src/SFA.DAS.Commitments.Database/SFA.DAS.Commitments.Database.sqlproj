@@ -108,6 +108,8 @@
     <Build Include="StoredProcedures\GetDataLockStatusExpiryCandidates.sql" />
     <Build Include="StoredProcedures\UpdateDatalockStatusIsExpired.sql" />
     <Build Include="StoredProcedures\GetApprenticeshipUpdatesByDateAndStatus.sql" />
+    <Build Include="UserDefinedTypes\DataLockStatusTableType.sql" />
+    <Build Include="StoredProcedures\UpsertDataLockStatuses.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="SFA.DAS.Commitments.Database.refactorlog" />

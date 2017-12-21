@@ -125,10 +125,33 @@ namespace SFA.DAS.CommitmentPayments.WebJob.Updater
                 // * the parallelism and batching should speed up the process, but could make the experience for interactive users worse! 
                 // possibly split database into 2, to keep interactivity??
 
+                const int
+                    batchSize = 50; // payments events service is currently hardcoded to return 250 dataLockStatuses
+
+                //int currentBatchSize = 
+
+                //_logger.Info("Batch processing {currentBatchSize} datalocks"); // or range 0-49
+
+                // log every DataLockStatus we receive
+                page.Select(dl =>
+                    $"Read datalock Apprenticeship {dl.ApprenticeshipId} Event Id {dl.DataLockEventId} Status {dl.ErrorCode} and EventStatus: {dl.EventStatus}")
+                    .ForEach(l => _logger.Info(l));
+
+                var whitelistedDataLockStatuses = DataLockStatususWithWhitelistErrorCodes(page);
+
+                foreach (var dl in whitelistedDataLockStatuses)
+                    dl.ErrorCode = dl.ErrorCode & DataLockErrorCodeWhitelistMask;
+
+                //todo: log Updating Apprenticeship
+
+                //todo: sequence importance? - parallel forall these? or async? tvp!
+
+
+
                 foreach (var dataLockStatus in page)
                 {
                     _logger.Info($"Read datalock Apprenticeship {dataLockStatus.ApprenticeshipId} " +
-                        $"Event Id {dataLockStatus.DataLockEventId} Status {dataLockStatus.ErrorCode} and EventStatus: {dataLockStatus.EventStatus}");
+                                 $"Event Id {dataLockStatus.DataLockEventId} Status {dataLockStatus.ErrorCode} and EventStatus: {dataLockStatus.EventStatus}");
 
                     var datalockSuccess = dataLockStatus.ErrorCode == DataLockErrorCode.None;
 
@@ -139,11 +162,15 @@ namespace SFA.DAS.CommitmentPayments.WebJob.Updater
                         ApplyErrorCodeWhiteList(dataLockStatus);
                     }
 
+                    // todo: batch will return collection of datalockstatus that match the following condition
+                    // note: we don't need to set the ErrorCode in the dataLockStatus for datalockstatuses that we're going to ignore
+
                     // if it started with no error, or it still has an error after whitelisting
+                    // i.e. we didn't start off with flags which all disappeared after whitelisting
                     if (datalockSuccess || dataLockStatus.ErrorCode != DataLockErrorCode.None)
                     {
                         _logger.Info($"Updating Apprenticeship {dataLockStatus.ApprenticeshipId} " +
-                             $"Event Id {dataLockStatus.DataLockEventId} Status {dataLockStatus.ErrorCode}");
+                                     $"Event Id {dataLockStatus.DataLockEventId} Status {dataLockStatus.ErrorCode}");
 
                         //todo: determing how we can batch up calls using tvp, combined with parallel running and whenall, and error handling!
 
@@ -152,7 +179,7 @@ namespace SFA.DAS.CommitmentPayments.WebJob.Updater
                             //todo: distinct page on? group and take latest, check group for enclosing if predicate?
                             //where ApprenticeshipId = @ApprenticeshipId
                             //and PriceEpisodeIdentifier = @PriceEpisodeIdentifier
-                            await _dataLockRepository.UpdateDataLockStatus(dataLockStatus);
+                            await _dataLockRepository.UpdateDataLockStatusAsync(dataLockStatus);
 
                             //todo: we could batch all the updates, then batch filter, but not good if job fails after update batch - filtering will be missed
                             // but as it stands, each filter could fail (throw) and you're in the same situation (as the exception is swallowed)
@@ -174,13 +201,16 @@ namespace SFA.DAS.CommitmentPayments.WebJob.Updater
                             //todo: we could combine these 2 (ExpirePendingApprenticeshipUpdates), but that would move BL into the SP
                             //todo: GetPendingApprenticeshipUpdateCostAndTrainingCode, return in DTO, add index on AppId, Cost & TrainingCode? not worth it, won't table scan on search
                             var pendingUpdate = await
-                             _apprenticeshipUpdateRepository.GetPendingApprenticeshipUpdate(dataLockStatus.ApprenticeshipId);
+                                _apprenticeshipUpdateRepository.GetPendingApprenticeshipUpdate(dataLockStatus
+                                    .ApprenticeshipId);
 
-                            if (pendingUpdate != null && (pendingUpdate.Cost != null || pendingUpdate.TrainingCode != null))
+                            if (pendingUpdate != null &&
+                                (pendingUpdate.Cost != null || pendingUpdate.TrainingCode != null))
                             {
                                 //todo: currently execute sql, how much performance improvement would we get by using a sp? prob not a lot for such a simple update
                                 await _apprenticeshipUpdateRepository.ExpireApprenticeshipUpdate(pendingUpdate.Id);
-                                _logger.Info($"Pending ApprenticeshipUpdate {pendingUpdate.Id} expired due to successful data lock event {dataLockStatus.DataLockEventId}");
+                                _logger.Info(
+                                    $"Pending ApprenticeshipUpdate {pendingUpdate.Id} expired due to successful data lock event {dataLockStatus.DataLockEventId}");
                             }
                         }
                     }
@@ -201,6 +231,36 @@ namespace SFA.DAS.CommitmentPayments.WebJob.Updater
         private static int UnexpectedFlags(DataLockErrorCode dataLockErrorCode)
         {
             return (int) dataLockErrorCode & (~(int) DataLockErrorCodeWhitelistMask);
+        }
+
+        // valid is None || a whitelisted error code
+        private IEnumerable<DataLockStatus> DataLockStatususWithWhitelistErrorCodes(IEnumerable<DataLockStatus> dataLockStatuses)
+        {
+            return dataLockStatuses.Where(dl =>
+                dl.ErrorCode == DataLockErrorCode.None ||
+                (dl.ErrorCode & DataLockErrorCodeWhitelistMask) != DataLockErrorCode.None);
+        }
+    }
+
+    // borrowed from ix.net, if we start using more of rx/ix, we should add the package(s), but lets not add a package just for a ForEach!
+    //todo: move this to its own file, if we end up keeping it
+    public static class EnumerableEx
+    {
+        /// <summary>
+        ///     Enumerates the sequence and invokes the given action for each value in the sequence.
+        /// </summary>
+        /// <typeparam name="TSource">Source sequence element type.</typeparam>
+        /// <param name="source">Source sequence.</param>
+        /// <param name="onNext">Action to invoke for each element.</param>
+        public static void ForEach<TSource>(this IEnumerable<TSource> source, Action<TSource> onNext)
+        {
+            if (source == null)
+                throw new ArgumentNullException(nameof(source));
+            if (onNext == null)
+                throw new ArgumentNullException(nameof(onNext));
+
+            foreach (var item in source)
+                onNext(item);
         }
     }
 }

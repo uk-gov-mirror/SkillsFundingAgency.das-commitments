@@ -34,7 +34,7 @@ namespace SFA.DAS.CommitmentPayments.WebJob.UnitTests.Updater
             _config = new CommitmentPaymentsConfiguration();
             _apprenticeshipRepository = new Mock<IApprenticeshipRepository>();
             _dataLockRepository.Setup(x => x.GetLastDataLockEventId()).ReturnsAsync(1L);
-            _dataLockRepository.Setup(x => x.UpdateDataLockStatus(It.IsAny<DataLockStatus>())).ReturnsAsync(0L);
+            _dataLockRepository.Setup(x => x.UpdateDataLockStatusAsync(It.IsAny<DataLockStatus>())).ReturnsAsync(0L);
             
             _paymentEvents.Setup(x => x.GetDataLockEvents(
                 It.IsAny<long>(),
@@ -144,7 +144,7 @@ namespace SFA.DAS.CommitmentPayments.WebJob.UnitTests.Updater
             await _dataLockUpdater.RunUpdate();
 
             //Assert
-            _dataLockRepository.Verify(x => x.UpdateDataLockStatus(It.IsAny<DataLockStatus>()), Times.Exactly(3));
+            _dataLockRepository.Verify(x => x.UpdateDataLockStatusAsync(It.IsAny<DataLockStatus>()), Times.Exactly(3));
         }
 
         [Test]
@@ -260,7 +260,7 @@ namespace SFA.DAS.CommitmentPayments.WebJob.UnitTests.Updater
 
             //Assert
             var expectedCalls = expectUpdate ? 1 : 0;
-            _dataLockRepository.Verify(x => x.UpdateDataLockStatus(It.IsAny<DataLockStatus>()), Times.Exactly(expectedCalls));
+            _dataLockRepository.Verify(x => x.UpdateDataLockStatusAsync(It.IsAny<DataLockStatus>()), Times.Exactly(expectedCalls));
         }
 
 
@@ -289,7 +289,7 @@ namespace SFA.DAS.CommitmentPayments.WebJob.UnitTests.Updater
             await _dataLockUpdater.RunUpdate();
 
             //Assert
-            _dataLockRepository.Verify(x =>x.UpdateDataLockStatus(It.Is<DataLockStatus>(d =>d.ErrorCode == expectSavedErrorCode)), Times.Once);
+            _dataLockRepository.Verify(x =>x.UpdateDataLockStatusAsync(It.Is<DataLockStatus>(d =>d.ErrorCode == expectSavedErrorCode)), Times.Once);
         }
         
         [Test]
@@ -306,7 +306,7 @@ namespace SFA.DAS.CommitmentPayments.WebJob.UnitTests.Updater
             };
 
             _paymentEvents.Setup(x => x.GetDataLockEvents(1, null, null, 0L, 1)).ReturnsAsync(page1);
-            _dataLockRepository.Setup(x => x.UpdateDataLockStatus(It.IsAny<DataLockStatus>())).Throws(new RepositoryConstraintException());
+            _dataLockRepository.Setup(x => x.UpdateDataLockStatusAsync(It.IsAny<DataLockStatus>())).Throws(new RepositoryConstraintException());
 
             Assert.ThrowsAsync<RepositoryConstraintException>(async () => await _dataLockUpdater.RunUpdate());
         }
@@ -325,7 +325,7 @@ namespace SFA.DAS.CommitmentPayments.WebJob.UnitTests.Updater
             };
 
             _paymentEvents.Setup(x => x.GetDataLockEvents(1, null, null, 0L, 1)).ReturnsAsync(page1);
-            _dataLockRepository.Setup(x => x.UpdateDataLockStatus(It.IsAny<DataLockStatus>())).Throws(new RepositoryConstraintException());
+            _dataLockRepository.Setup(x => x.UpdateDataLockStatusAsync(It.IsAny<DataLockStatus>())).Throws(new RepositoryConstraintException());
 
             _config.IgnoreDataLockStatusConstraintErrors = true;
 
