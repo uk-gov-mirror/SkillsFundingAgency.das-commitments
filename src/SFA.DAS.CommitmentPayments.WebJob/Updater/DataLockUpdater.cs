@@ -24,7 +24,13 @@ namespace SFA.DAS.CommitmentPayments.WebJob.Updater
         private readonly IFilterOutAcademicYearRollOverDataLocks _filterAcademicYearRolloverDataLocks;
         private readonly IApprenticeshipRepository _apprenticeshipRepository;
 
-        private readonly IList<DataLockErrorCode> _whiteList;
+        //private readonly IList<DataLockErrorCode> _whiteList;
+        private const DataLockErrorCode DataLockErrorCodeWhitelistMask =
+            DataLockErrorCode.Dlock03
+            | DataLockErrorCode.Dlock04
+            | DataLockErrorCode.Dlock05
+            | DataLockErrorCode.Dlock06
+            | DataLockErrorCode.Dlock07;
 
         public DataLockUpdater(ILog logger,
             IPaymentEvents paymentEventsService,
@@ -55,14 +61,14 @@ namespace SFA.DAS.CommitmentPayments.WebJob.Updater
             _filterAcademicYearRolloverDataLocks = filter;
             _apprenticeshipRepository = apprenticeshipRepository;
 
-            _whiteList = new List<DataLockErrorCode>
-            {
-                DataLockErrorCode.Dlock03,
-                DataLockErrorCode.Dlock04,
-                DataLockErrorCode.Dlock05,
-                DataLockErrorCode.Dlock06,
-                DataLockErrorCode.Dlock07
-            };
+            //WhiteList = new List<DataLockErrorCode>
+            //{
+            //    DataLockErrorCode.Dlock03,
+            //    DataLockErrorCode.Dlock04,
+            //    DataLockErrorCode.Dlock05,
+            //    DataLockErrorCode.Dlock06,
+            //    DataLockErrorCode.Dlock07
+            //};
         }
 
         public async Task RunUpdate()
@@ -89,7 +95,7 @@ namespace SFA.DAS.CommitmentPayments.WebJob.Updater
                 _logger.Info($"{page.Count} records returned in page");
 
                 //todo: unroll loop - issue: uncaught exception currently will leave 1 datalockstatus process in an undefined state. if we unroll, could leave a whole page in a bad state
-                // run all in a transaction? make locking worse? parallel async?
+                // run all in a transaction? make locking worse? parallel async? compensating transaction? take risk? (if use transaction, could reduce batch size)
 
                 // batch size (0==whole page)
 
@@ -125,8 +131,9 @@ namespace SFA.DAS.CommitmentPayments.WebJob.Updater
                 // don't return current datalock in filter
 
                 // notes: different batch sizes for different bits? e.g. D page batch size, B batch < page
-                // what determines page size? can we use page size as the batch size?
+                // what determines page size? (hard coded in service to 250) can we use page size as the batch size? no, allow configurable
                 // * the parallelism and batching should speed up the process, but could make the experience for interactive users worse! 
+                // possibly split database into 2, to keep interactivity??
 
                 foreach (var dataLockStatus in page)
                 {
@@ -174,7 +181,7 @@ namespace SFA.DAS.CommitmentPayments.WebJob.Updater
                             //error handling if we do?
                             await _apprenticeshipRepository.SetHasHadDataLockSuccess(dataLockStatus.ApprenticeshipId);
 
-                            //todo: we could combine these 2, but that would move BL into the SP
+                            //todo: we could combine these 2 (ExpirePendingApprenticeshipUpdates), but that would move BL into the SP
                             //todo: GetPendingApprenticeshipUpdateCostAndTrainingCode, return in DTO, add index on AppId, Cost & TrainingCode? not worth it, won't table scan on search
                             var pendingUpdate = await
                              _apprenticeshipUpdateRepository.GetPendingApprenticeshipUpdate(dataLockStatus.ApprenticeshipId);
@@ -196,32 +203,67 @@ namespace SFA.DAS.CommitmentPayments.WebJob.Updater
         }
 
 
+        //private void ApplyErrorCodeWhiteList(DataLockStatus dataLockStatus)
+        //{
+        //    var whitelisted = DataLockErrorCode.None;
+        //    var skipped = DataLockErrorCode.None;
+
+        //    foreach (DataLockErrorCode errorCode in Enum.GetValues(typeof(DataLockErrorCode)))
+        //    {
+        //        if (dataLockStatus.ErrorCode.HasFlag(errorCode))
+        //        {
+        //            if (_whiteList.Contains(errorCode))
+        //            {
+        //                whitelisted = whitelisted == DataLockErrorCode.None ? errorCode : whitelisted | errorCode;
+        //            }
+        //            else
+        //            {
+        //                skipped = skipped == DataLockErrorCode.None ? errorCode : skipped | errorCode;
+        //            }
+        //        }
+        //    }
+
+        //    if (skipped != DataLockErrorCode.None)
+        //    {
+        //        _logger.Info($"Skipping {skipped}");
+        //    }
+
+        //    dataLockStatus.ErrorCode = whitelisted;
+        //}
+
         private void ApplyErrorCodeWhiteList(DataLockStatus dataLockStatus)
         {
-            var whitelisted = DataLockErrorCode.None;
-            var skipped = DataLockErrorCode.None;
+            dataLockStatus.ErrorCode = Whitelist(dataLockStatus.ErrorCode);
+            _logger.Info($"Skipping {Convert.ToString(UnexpectedFlags(dataLockStatus.ErrorCode), 2)}");
 
-            foreach (DataLockErrorCode errorCode in Enum.GetValues(typeof(DataLockErrorCode)))
-            {
-                if (dataLockStatus.ErrorCode.HasFlag(errorCode))
-                {
-                    if (_whiteList.Contains(errorCode))
-                    {
-                        whitelisted = whitelisted == DataLockErrorCode.None ? errorCode : whitelisted | errorCode;
-                    }
-                    else
-                    {
-                        skipped = skipped == DataLockErrorCode.None ? errorCode : skipped | errorCode;
-                    }
-                }
-            }
+        }
 
-            if (skipped != DataLockErrorCode.None)
-            {
-                _logger.Info($"Skipping {skipped}");
-            }
+        //assumes no duplicate flags! and enum backed by int!
+        // forces you to have an enum instance
+        //public static int GetNonDuplicateFlagsMask(this Enum e)
+        //{
+        //    return Enum.GetValues(e.GetType()).Cast<int>().Sum();
+        //}
 
-            dataLockStatus.ErrorCode = whitelisted;
+        //todo: doesn't belong in this class, generic to enums
+        //private static int GetNonDuplicateFlagsMask(Type enumType)  //todo: best as a generic method, so can return enum type, T GetNonDuplicateFlagsMask<T>(), see https://stackoverflow.com/questions/79126/create-generic-method-constraining-t-to-an-enum
+        //{
+        //    if (!enumType.IsEnum)
+        //        throw new Exception($"{enumType.FullName} is not an enum");
+        //    //todo: check backed by int?
+        //    return Enum.GetValues(enumType).Cast<int>().Sum();
+        //}
+
+        //private static readonly DataLockErrorCode DataLockErrorCodeMask = (DataLockErrorCode)GetNonDuplicateFlagsMask(typeof(DataLockErrorCode));
+
+        private static DataLockErrorCode Whitelist(DataLockErrorCode dataLockErrorCode)
+        {
+            return dataLockErrorCode & DataLockErrorCodeWhitelistMask; //DataLockErrorCodeMask;
+        }
+
+        private static int UnexpectedFlags(DataLockErrorCode dataLockErrorCode)
+        {
+            return (int) dataLockErrorCode & (~(int) DataLockErrorCodeWhitelistMask); //DataLockErrorCodeMask);
         }
     }
 }

@@ -267,6 +267,9 @@ namespace SFA.DAS.CommitmentPayments.WebJob.UnitTests.Updater
         [TestCase(DataLockErrorCode.Dlock01 | DataLockErrorCode.Dlock03, DataLockErrorCode.Dlock03)]
         [TestCase(DataLockErrorCode.Dlock07 | DataLockErrorCode.Dlock10, DataLockErrorCode.Dlock07)]
         [TestCase(DataLockErrorCode.Dlock03 | DataLockErrorCode.Dlock04, DataLockErrorCode.Dlock03 | DataLockErrorCode.Dlock04)]
+        // special case to check unexpected flags are removed
+        [TestCase((DataLockErrorCode)~0, DataLockErrorCode.Dlock03 | DataLockErrorCode.Dlock04 | DataLockErrorCode.Dlock05 | DataLockErrorCode.Dlock06 | DataLockErrorCode.Dlock07)]
+        [TestCase(DataLockErrorCode.None, DataLockErrorCode.None)]
         public async Task ThenDataLocksWithMultipleErrorCodesAreFilteredUsingWhitelist(DataLockErrorCode errorCode,
             DataLockErrorCode expectSavedErrorCode)
         {
