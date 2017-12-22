@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-
+using Microsoft.SqlServer.Server;
 using SFA.DAS.Commitments.Domain.Entities.DataLock;
 
 namespace SFA.DAS.Commitments.Domain.Data
@@ -10,6 +10,7 @@ namespace SFA.DAS.Commitments.Domain.Data
     {
         Task<long> GetLastDataLockEventId();
         Task<long> UpdateDataLockStatusAsync(DataLockStatus dataLockStatus);
+        Task<SqlDataRecord[]> UpsertDataLockStatusesAsync(IEnumerable<DataLockStatus> dataLockStatuses, SqlDataRecord[] sqlDataRecordsForReuse = null);
         Task<List<DataLockStatus>> GetDataLocks(long apprenticeshipId, bool includeRemoved=false);
         Task<DataLockStatus> GetDataLock(long dataLockEventId);
         Task<long> UpdateDataLockTriageStatus(long dataLockEventId, TriageStatus triageStatus);

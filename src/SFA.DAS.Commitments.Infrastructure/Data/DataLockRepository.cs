@@ -14,9 +14,46 @@ using System.Data.SqlClient;
 using SFA.DAS.Commitments.Domain.Exceptions;
 using System;
 using System.Text;
+using Microsoft.SqlServer.Server;
 
 namespace SFA.DAS.Commitments.Infrastructure.Data
 {
+    //todo: move this somewhere more appropriate
+    public static class SqlDataRecordExtensions
+    {
+        public static void SetNullableDateTime(this SqlDataRecord record, int ordinal, DateTime? nullableValue)
+        {
+            if (nullableValue.HasValue)
+                record.SetDateTime(ordinal, nullableValue.GetValueOrDefault());
+            else
+                record.SetDBNull(ordinal);
+        }
+
+        public static void SetNullableDecimal(this SqlDataRecord record, int ordinal, decimal? nullableValue)
+        {
+            if (nullableValue.HasValue)
+                record.SetDecimal(ordinal, nullableValue.GetValueOrDefault());
+            else
+                record.SetDBNull(ordinal);
+        }
+
+        public static void SetNullableInt32(this SqlDataRecord record, int ordinal, int? nullableValue)
+        {
+            if (nullableValue.HasValue)
+                record.SetInt32(ordinal, nullableValue.GetValueOrDefault());
+            else
+                record.SetDBNull(ordinal);
+        }
+
+        public static void SetNullableInt64(this SqlDataRecord record, int ordinal, long? nullableValue)
+        {
+            if (nullableValue.HasValue)
+                record.SetInt64(ordinal, nullableValue.GetValueOrDefault());
+            else
+                record.SetDBNull(ordinal);
+        }
+    }
+
     public class DataLockRepository : BaseRepository, IDataLockRepository
     {
         private readonly IDataLockTransactions _dataLockTransactions;
@@ -84,16 +121,142 @@ namespace SFA.DAS.Commitments.Infrastructure.Data
             }
         }
 
-        public async Task UpsertDataLockStatusesAsync(IEnumerable<DataLockStatus> dataLockStatuses)
+        private static SqlMetaData[] DataLockStatusTableTypeMetaData = new[]
+        {
+            new SqlMetaData("DataLockEventId", SqlDbType.BigInt),
+            new SqlMetaData("DataLockEventDatetime", SqlDbType.DateTime),
+            new SqlMetaData("PriceEpisodeIdentifier", SqlDbType.NVarChar, 25), //todo: 25
+            new SqlMetaData("ApprenticeshipId", SqlDbType.BigInt),
+            new SqlMetaData("IlrTrainingCourseCode", SqlDbType.NVarChar, 20), // 20
+            new SqlMetaData("IlrTrainingType", SqlDbType.TinyInt),
+            new SqlMetaData("IlrActualStartDate", SqlDbType.DateTime), //datetimesmall??
+            new SqlMetaData("IlrEffectiveFromDate", SqlDbType.DateTime),
+            new SqlMetaData("IlrPriceEffectiveToDate", SqlDbType.DateTime),
+            new SqlMetaData("IlrTotalCost", SqlDbType.Decimal, 18, 0), // 18, 0
+            new SqlMetaData("ErrorCode", SqlDbType.Int),
+            new SqlMetaData("Status", SqlDbType.TinyInt),
+            new SqlMetaData("TriageStatus", SqlDbType.TinyInt),
+            new SqlMetaData("ApprenticeshipUpdateId", SqlDbType.BigInt),
+            new SqlMetaData("IsResolved", SqlDbType.Bit),
+            new SqlMetaData("EventStatus", SqlDbType.TinyInt)
+
+            //    [DataLockEventId] [BIGINT] NOT NULL,
+
+            //[DataLockEventDatetime][DATETIME] NOT NULL,
+
+            //[PriceEpisodeIdentifier] [NVARCHAR] (25) NOT NULL,
+
+            //[ApprenticeshipId] [BIGINT]
+            //NOT NULL,
+
+            //[IlrTrainingCourseCode] [NVARCHAR] (20) NULL,
+            //[IlrTrainingType]
+            //[TINYINT]
+            //NOT NULL,
+
+            //[IlrActualStartDate] [DATETIME] NULL,
+            //[IlrEffectiveFromDate] [DATETIME] NULL,
+            //[IlrPriceEffectiveToDate] [DATETIME] NULL,
+            //[IlrTotalCost] [DECIMAL] (18, 0) NULL,
+            //[ErrorCode]
+            //[INT]
+            //NOT NULL,
+
+            //[Status] [TINYINT]
+            //NOT NULL,
+
+            //[TriageStatus] [TINYINT]
+            //NOT NULL,
+
+            //[ApprenticeshipUpdateId] [BIGINT] NULL,
+            //[IsResolved]
+            //[BIT]
+            //NOT NULL,
+
+            //[EventStatus] [TINYINT]
+            //NOT NULL
+        };
+
+        private enum DataLockStatusSqlDataRecordOrdinal
+        {
+            DataLockEventId,
+            DataLockEventDatetime,
+            PriceEpisodeIdentifier,
+            ApprenticeshipId,
+            IlrTrainingCourseCode,
+            IlrTrainingType,
+            IlrActualStartDate, 
+            IlrEffectiveFromDate,
+            IlrPriceEffectiveToDate,
+            IlrTotalCost,
+            ErrorCode,
+            Status,
+            TriageStatus,
+            ApprenticeshipUpdateId,
+            IsResolved,
+            EventStatus
+        }
+
+
+        /// <summary>
+        /// </summary>
+        /// <param name="dataLockStatuses"></param>
+        /// <param name="sqlDataRecordsForReuse">collection of sqlDataRecords that we can reuse, from https://msdn.microsoft.com/en-us/library/microsoft.sqlserver.server.sqldatarecord(v=vs.110).aspx...
+        /// When writing common language runtime (CLR) applications, you should re-use existing SqlDataRecord objects instead of creating new ones every time. Creating many new SqlDataRecord objects could severely deplete memory and adversely affect performance.
+        /// </param>
+        /// <returns>collection of sqlDataRecords that can be reused</returns>
+        public async Task<SqlDataRecord[]> UpsertDataLockStatusesAsync(IEnumerable<DataLockStatus> dataLockStatuses, SqlDataRecord[] sqlDataRecordsForReuse = null) // rename dataLockStatusSqlDataRecordsForReuse
         {
             _logger.Info($"");
+
+            int countOfDataLockStatuses = dataLockStatuses.Count();
+
+            //todo: check metadata of sqlDataRecordsForReuse is correct?
+            //pass back as an (opaque) type? for metadata safety, i.e.
+            //class UpsertXReuseToken {SqlX[]}
+
+            //todo: don't pass in ienumerable as optimisation, if we can use length
+            if (sqlDataRecordsForReuse == null || sqlDataRecordsForReuse.Length != countOfDataLockStatuses)
+            {
+                sqlDataRecordsForReuse = new SqlDataRecord[countOfDataLockStatuses];
+                for (int current = 0; current < countOfDataLockStatuses; ++current)
+                    sqlDataRecordsForReuse[current] = new SqlDataRecord(DataLockStatusTableTypeMetaData);
+                //dataLockStatuses.Select(dl => new SqlDataRecord(DataLockStatusTableTypeMetaData));
+            }
+
+            int currentSqlDataRecord = -1;
+            foreach (var dataLockStatus in dataLockStatuses)
+            {
+                var sqlDataRecord = sqlDataRecordsForReuse[++currentSqlDataRecord];
+                //todo: move into method
+                //mappings: https://docs.microsoft.com/en-us/dotnet/framework/data/adonet/sql-server-data-type-mappings
+                //for safetly, store GetOrdinal's in static?
+                //todo: check nulls
+                sqlDataRecord.SetInt64((int)DataLockStatusSqlDataRecordOrdinal.DataLockEventId, dataLockStatus.DataLockEventId);
+                sqlDataRecord.SetDateTime((int)DataLockStatusSqlDataRecordOrdinal.DataLockEventDatetime, dataLockStatus.DataLockEventDatetime);
+                sqlDataRecord.SetString((int)DataLockStatusSqlDataRecordOrdinal.PriceEpisodeIdentifier, dataLockStatus.PriceEpisodeIdentifier);
+                sqlDataRecord.SetInt64((int)DataLockStatusSqlDataRecordOrdinal.ApprenticeshipId, dataLockStatus.ApprenticeshipId);
+                sqlDataRecord.SetString((int)DataLockStatusSqlDataRecordOrdinal.IlrTrainingCourseCode, dataLockStatus.IlrTrainingCourseCode);
+                sqlDataRecord.SetByte((int)DataLockStatusSqlDataRecordOrdinal.IlrTrainingType, (byte)dataLockStatus.IlrTrainingType);
+                sqlDataRecord.SetNullableDateTime((int)DataLockStatusSqlDataRecordOrdinal.IlrActualStartDate, dataLockStatus.IlrActualStartDate);
+                sqlDataRecord.SetNullableDateTime((int)DataLockStatusSqlDataRecordOrdinal.IlrEffectiveFromDate, dataLockStatus.IlrEffectiveFromDate);
+                sqlDataRecord.SetNullableDateTime((int)DataLockStatusSqlDataRecordOrdinal.IlrPriceEffectiveToDate, dataLockStatus.IlrPriceEffectiveToDate);
+                sqlDataRecord.SetNullableDecimal((int)DataLockStatusSqlDataRecordOrdinal.IlrTotalCost, dataLockStatus.IlrTotalCost);
+                sqlDataRecord.SetInt32((int)DataLockStatusSqlDataRecordOrdinal.ErrorCode, (int)dataLockStatus.ErrorCode);
+                sqlDataRecord.SetByte((int)DataLockStatusSqlDataRecordOrdinal.Status, (byte)dataLockStatus.Status);
+                sqlDataRecord.SetByte((int)DataLockStatusSqlDataRecordOrdinal.TriageStatus, (byte)dataLockStatus.TriageStatus);
+                sqlDataRecord.SetNullableInt64((int)DataLockStatusSqlDataRecordOrdinal.ApprenticeshipUpdateId, dataLockStatus.ApprenticeshipUpdateId);
+                sqlDataRecord.SetBoolean((int)DataLockStatusSqlDataRecordOrdinal.IsResolved, dataLockStatus.IsResolved);
+                sqlDataRecord.SetByte((int)DataLockStatusSqlDataRecordOrdinal.EventStatus, (byte)dataLockStatus.EventStatus);
+            }
+
             try
             {
                 // what does this return??
                 await WithConnection(async connection =>
                 {
                     var command = new SqlCommand("[dbo].[UpsertDataLockStatuses]", connection);
-                    var tvpParam = command.Parameters.AddWithValue("@DataLockStatusTable", dataLockStatuses);
+                    var tvpParam = command.Parameters.AddWithValue("@DataLockStatusTable", sqlDataRecordsForReuse);
                     tvpParam.SqlDbType = SqlDbType.Structured;
                     tvpParam.TypeName = "[dbo].[DataLockStatusTableType]";
 
@@ -101,10 +264,17 @@ namespace SFA.DAS.Commitments.Infrastructure.Data
                 });
             }
             //todo: need to check error handling of new sp
-            catch (Exception ex) when (ex.InnerException is SqlException && IsConstraintError(ex.InnerException as SqlException))
+            catch (Exception ex) when (ex.InnerException is SqlException &&
+                                       IsConstraintError(ex.InnerException as SqlException))
             {
                 throw new RepositoryConstraintException("Unable to insert datalockstatus record", ex);
             }
+            catch (Exception ex)
+            {
+                var t = ex;
+            }
+
+            return sqlDataRecordsForReuse;
         }
 
         private static bool IsConstraintError(SqlException ex)

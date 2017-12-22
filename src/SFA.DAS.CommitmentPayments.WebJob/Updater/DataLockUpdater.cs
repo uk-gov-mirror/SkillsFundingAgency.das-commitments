@@ -13,6 +13,7 @@ using SFA.DAS.Commitments.Domain.Exceptions;
 namespace SFA.DAS.CommitmentPayments.WebJob.Updater
 {
     //todo: interface is in same assembly (entourage), utilise staircase pattern? not worth it as probably nothing external uses these classes
+    //todo: why does db connection string contain mars?
     public class DataLockUpdater : IDataLockUpdater
     {
         private readonly ILog _logger;
@@ -125,6 +126,7 @@ namespace SFA.DAS.CommitmentPayments.WebJob.Updater
                 // * the parallelism and batching should speed up the process, but could make the experience for interactive users worse! 
                 // possibly split database into 2, to keep interactivity??
 
+                //get from _config
                 const int
                     batchSize = 50; // payments events service is currently hardcoded to return 250 dataLockStatuses
 
@@ -146,7 +148,7 @@ namespace SFA.DAS.CommitmentPayments.WebJob.Updater
 
                 //todo: sequence importance? - parallel forall these? or async? tvp!
 
-
+                await _dataLockRepository.UpsertDataLockStatusesAsync(whitelistedDataLockStatuses);
 
                 foreach (var dataLockStatus in page)
                 {
