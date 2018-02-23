@@ -55,7 +55,7 @@ namespace SFA.DAS.Commitments.Application.UnitTests.Commands.AcceptApprenticeshi
                     UpdateOriginator = Originator.Provider,
                     ProviderName = "Provider name",
                     LegalEntityName = "Legal entity name",
-                    DataLockCourse = true,
+                    //DataLockCourse = true,
 
                     PriceHistory = new List<PriceHistory>
                     {
@@ -83,7 +83,7 @@ namespace SFA.DAS.Commitments.Application.UnitTests.Commands.AcceptApprenticeshi
             _apprenticeship.ProviderName.Should().Be("Provider name");
             _apprenticeship.LegalEntityName.Should().Be("Legal entity name");
             _apprenticeship.TrainingType.Should().Be(TrainingType.Framework);
-            _apprenticeship.DataLockCourse.Should().Be(true);
+            //_apprenticeship.DataLockCourse.Should().Be(true);
         }
 
         [Test]

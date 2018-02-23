@@ -44,12 +44,13 @@ namespace SFA.DAS.Commitments.Domain.Entities
         public string ProviderName { get; set; }
         public string LegalEntityId { get; set; }
         public string LegalEntityName { get; set; }
-        public bool DataLockPrice { get; set; }
-        public bool DataLockPriceTriaged { get; set; }
-        public bool DataLockCourse { get; set; }
-        public bool DataLockCourseTriaged { get; set; }
-        public bool DataLockCourseChangeTriaged { get; set; }
+        //public bool DataLockPrice { get; set; }
+        //public bool DataLockPriceTriaged { get; set; }
+        //public bool DataLockCourse { get; set; }
+        //public bool DataLockCourseTriaged { get; set; }
+        //public bool DataLockCourseChangeTriaged { get; set; }
         public List<PriceHistory> PriceHistory { get; set; }
+        // where/when does this get populated?
         public bool HasHadDataLockSuccess { get; set; }
 
         public Apprenticeship Clone()

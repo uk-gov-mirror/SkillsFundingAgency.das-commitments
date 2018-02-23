@@ -14,7 +14,7 @@ SELECT
 				, DataLockCourse
 				, DataLockPrice
 				, ProviderId
-			FROM [dbo].[ApprenticeshipSummary]
+			FROM [dbo].[ApprenticeshipSummaryWithDataLock]
 			WHERE PaymentStatus > 0
 			AND (DataLockCourse = 1 OR DataLockPrice = 1 OR DataLockCourseChangeTriaged = 1 OR UpdateOriginator = 0)
 		) a
