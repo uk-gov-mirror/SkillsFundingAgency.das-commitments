@@ -12,21 +12,21 @@ namespace SFA.DAS.Commitments.Api.Client.Interfaces
     {
         Task<CommitmentView> PostCommitment(string url, CommitmentRequest commitment);
 
-        Task PatchCommitment(string url, CommitmentSubmission submision);
+        //Task PatchCommitment(string url, CommitmentSubmission submision);
 
         Task PutCommitment(string url, CommitmentStatus commitmentStatus);
 
-        Task PatchApprenticeship(string url, ApprenticeshipSubmission apprenticeshipSubmission);
+        //Task PatchApprenticeship(string url, ApprenticeshipSubmission apprenticeshipSubmission);
 
-        Task<List<CommitmentListItem>> GetCommitments(string url);
+        //Task<List<CommitmentListItem>> GetCommitments(string url);
 
-        Task<CommitmentView> GetCommitment(string url);
+        //Task<CommitmentView> GetCommitment(string url);
 
-        Task<List<Apprenticeship>> GetApprenticeships(string url);
+        //Task<List<Apprenticeship>> GetApprenticeships(string url);
 
-        Task<ApprenticeshipSearchResponse> GetApprenticeships(string url, ApprenticeshipSearchQuery apprenticeshipQuery);
+        //Task<ApprenticeshipSearchResponse> GetApprenticeships(string url, ApprenticeshipSearchQuery apprenticeshipQuery);
 
-        Task<Apprenticeship> GetApprenticeship(string url);
+        //Task<Apprenticeship> GetApprenticeship(string url);
 
         Task PutApprenticeship(string url, ApprenticeshipRequest apprenticeship);
 
@@ -38,20 +38,21 @@ namespace SFA.DAS.Commitments.Api.Client.Interfaces
 
         Task DeleteCommitment(string url, DeleteRequest deleteRequest);
 
-        Task PostApprenticeshipUpdate(string url, ApprenticeshipUpdateRequest apprenticeshipUpdate);
+        //Task PostApprenticeshipUpdate(string url, ApprenticeshipUpdateRequest apprenticeshipUpdate);
 
-        Task<ApprenticeshipUpdate> GetApprenticeshipUpdate(string url);
+        //Task<ApprenticeshipUpdate> GetApprenticeshipUpdate(string url);
 
-        Task PatchApprenticeshipUpdate(string url, ApprenticeshipUpdateSubmission submission);
+        //Task PatchApprenticeshipUpdate(string url, ApprenticeshipUpdateSubmission submission);
 
-        Task<IList<ProviderPaymentPriorityItem>> GetPaymentPriorityOrder(string url);
+        //Task<IList<ProviderPaymentPriorityItem>> GetPaymentPriorityOrder(string url);
 
         Task PutPaymentPriorityOrder(string url, ProviderPaymentPrioritySubmission submission);
 
         Task<long> PostBulkuploadFile(string url, BulkUploadFileRequest bulkUploadFileRequest);
 
-        Task<string> GetBulkuploadFile(string url);
+        //Task<string> GetBulkuploadFile(string url);
 
-        Task<List<ApprenticeshipStatusSummary>> GetEmployerAccountSummary(string url);
+        //Task<List<ApprenticeshipStatusSummary>> GetEmployerAccountSummary(string url);
+
     }
 }

@@ -31,9 +31,9 @@ namespace SFA.DAS.Commitments.Api
 
         protected void Application_Error()
         {
-            var ex = Server.GetLastError().GetBaseException();
+            //var ex = Server.GetLastError().GetBaseException();
 
-            Logger.Error(ex, "Unhandled exception");
+            //Logger.Error(ex, "Unhandled exception");
         }
     }
 }

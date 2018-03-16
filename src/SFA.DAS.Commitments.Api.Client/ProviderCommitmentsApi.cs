@@ -20,6 +20,7 @@ namespace SFA.DAS.Commitments.Api.Client
         private readonly ICommitmentsApiClientConfiguration _configuration;
 
         private readonly IHttpCommitmentHelper _commitmentHelper;
+        private readonly HttpClientHelper _httpClientHelper;
 
         public ProviderCommitmentsApi(HttpClient client, ICommitmentsApiClientConfiguration configuration)
             : base(client)
@@ -31,34 +32,40 @@ namespace SFA.DAS.Commitments.Api.Client
 
             _configuration = configuration;
             _commitmentHelper = new HttpCommitmentHelper(client);
+            _httpClientHelper = new HttpClientHelper(client);
         }
 
         public async Task PatchProviderCommitment(long providerId, long commitmentId, CommitmentSubmission submission)
         {
             var url = $"{_configuration.BaseUrl}api/provider/{providerId}/commitments/{commitmentId}";
 
-            await _commitmentHelper.PatchCommitment(url, submission);
+            //await _commitmentHelper.PatchCommitment(url, submission);
+            await _httpClientHelper.PatchAsync(url, submission);
+
         }
 
         public async Task<List<Apprenticeship>> GetProviderApprenticeships(long providerId)
         {
             var url = $"{_configuration.BaseUrl}api/provider/{providerId}/apprenticeships/";
 
-            return await _commitmentHelper.GetApprenticeships(url);
+            //return await _commitmentHelper.GetApprenticeships(url);
+            return await _httpClientHelper.GetAsync<List<Apprenticeship>>(url);
         }
 
         public async Task<ApprenticeshipSearchResponse> GetProviderApprenticeships(long providerId, ApprenticeshipSearchQuery apprenticeshipSearchQuery)
         {
             var url = $"{_configuration.BaseUrl}api/provider/{providerId}/apprenticeships/search";
 
-            return await _commitmentHelper.GetApprenticeships(url, apprenticeshipSearchQuery);
+            //return await _commitmentHelper.GetApprenticeships(url, apprenticeshipSearchQuery);
+            return await _httpClientHelper.GetAsync<ApprenticeshipSearchResponse>(url, apprenticeshipSearchQuery);
         }
 
         public async Task<Apprenticeship> GetProviderApprenticeship(long providerId, long apprenticeshipId)
         {
             var url = $"{_configuration.BaseUrl}api/provider/{providerId}/apprenticeships/{apprenticeshipId}";
 
-            return await _commitmentHelper.GetApprenticeship(url);
+            //return await _commitmentHelper.GetApprenticeship(url);
+            return await _httpClientHelper.GetAsync<Apprenticeship>(url);
         }
 
         public async Task CreateProviderApprenticeship(long providerId, long commitmentId, ApprenticeshipRequest apprenticeship)
@@ -79,14 +86,16 @@ namespace SFA.DAS.Commitments.Api.Client
         {
             var url = $"{_configuration.BaseUrl}api/provider/{providerId}/commitments";
 
-            return await _commitmentHelper.GetCommitments(url);
+            //return await _commitmentHelper.GetCommitments(url);
+            return await _httpClientHelper.GetAsync<List<CommitmentListItem>>(url);
         }
 
         public async Task<CommitmentView> GetProviderCommitment(long providerId, long commitmentId)
         {
             var url = $"{_configuration.BaseUrl}api/provider/{providerId}/commitments/{commitmentId}";
 
-            return await _commitmentHelper.GetCommitment(url);
+            //return await _commitmentHelper.GetCommitment(url);
+            return await _httpClientHelper.GetAsync<CommitmentView>(url);
         }
 
         public async Task BulkUploadApprenticeships(long providerId, long commitmentId, BulkApprenticeshipRequest bulkRequest)
@@ -113,7 +122,8 @@ namespace SFA.DAS.Commitments.Api.Client
         public async Task<string> BulkUploadFile(long providerId, long bulkUploadFileId)
         {
             var url = $"{_configuration.BaseUrl}api/provider/{providerId}/bulkupload/{bulkUploadFileId}";
-            return await _commitmentHelper.GetBulkuploadFile(url);
+            //return await _commitmentHelper.GetBulkuploadFile(url);
+            return await _httpClientHelper.GetAsync<string>(url);
         }
 
         public async Task DeleteProviderCommitment(long providerId, long commitmentId, DeleteRequest deleteRequest)
@@ -127,21 +137,25 @@ namespace SFA.DAS.Commitments.Api.Client
         {
             var url = $"{_configuration.BaseUrl}api/provider/{providerId}/apprenticeships/{apprenticeshipId}/update";
 
-            await _commitmentHelper.PostApprenticeshipUpdate(url, apprenticeshipUpdateRequest);
+            //await _commitmentHelper.PostApprenticeshipUpdate(url, apprenticeshipUpdateRequest);
+            await _httpClientHelper.PostAsync(url, apprenticeshipUpdateRequest);
         }
 
         public async Task<ApprenticeshipUpdate> GetPendingApprenticeshipUpdate(long providerId, long apprenticeshipId)
         {
             var url = $"{_configuration.BaseUrl}api/provider/{providerId}/apprenticeships/{apprenticeshipId}/update";
 
-            return await _commitmentHelper.GetApprenticeshipUpdate(url);
+            //return await _commitmentHelper.GetApprenticeshipUpdate(url);
+            return await _httpClientHelper.GetAsync<ApprenticeshipUpdate>(url);
         }
 
         public async Task PatchApprenticeshipUpdate(long providerId, long apprenticeshipId, ApprenticeshipUpdateSubmission submission)
         {
             var url = $"{_configuration.BaseUrl}api/provider/{providerId}/apprenticeships/{apprenticeshipId}/update";
 
-            await _commitmentHelper.PatchApprenticeshipUpdate(url, submission);
+            //await _commitmentHelper.PatchApprenticeshipUpdate(url, submission);
+            await _httpClientHelper.PatchAsync(url, submission);
+
         }
 
         public async Task<IEnumerable<PriceHistory>> GetPriceHistory(long providerId, long apprenticeshipId)
@@ -183,7 +197,9 @@ namespace SFA.DAS.Commitments.Api.Client
         {
             var url = $"{_configuration.BaseUrl}api/provider/{providerId}/commitments/{commitmentId}/approve";
 
-            await _commitmentHelper.PatchCommitment(url, submission);
+            //await _commitmentHelper.PatchCommitment(url, submission);
+            await _httpClientHelper.PatchAsync(url, submission);
+
         }
     }
 }

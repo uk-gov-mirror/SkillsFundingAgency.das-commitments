@@ -45,6 +45,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ErrorCodes.cs" />
+    <Compile Include="ErrorResponse.cs" />
     <Compile Include="AgreementStatus.cs" />
     <Compile Include="ApprenticeshipStatusSummary.cs" />
     <Compile Include="Apprenticeship\Apprenticeship.cs" />

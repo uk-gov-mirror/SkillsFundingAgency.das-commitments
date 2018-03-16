@@ -1,7 +1,10 @@
 ﻿using System.Net;
 using System.Net.Http;
+using System.Web.Http;
 using System.Web.Http.ExceptionHandling;
+using System.Web.Http.Results;
 using FluentValidation;
+using SFA.DAS.Commitments.Api.Types;
 using SFA.DAS.Commitments.Application.Exceptions;
 using SFA.DAS.NLog.Logger;
 
@@ -15,38 +18,38 @@ namespace SFA.DAS.Commitments.Api
         {
             if (context.Exception is ValidationException)
             {
-                var response = new HttpResponseMessage(HttpStatusCode.BadRequest);
-                var message = ((ValidationException)context.Exception).Message;
-                response.Content = new StringContent(message);
-                context.Result = new CustomErrorResult(context.Request, response);
-
+                var response = context.Request.CreateResponse(HttpStatusCode.BadRequest,
+                    new ErrorResponse
+                    {
+                        Message = context.Exception.Message,
+                        Code = "ValidationError"
+                    });
+                context.Result = new ResponseMessageResult(response);
                 Logger.Warn(context.Exception, "Validation error");
-
-                return;
             }
 
             if (context.Exception is UnauthorizedException)
             {
-                var response = new HttpResponseMessage(HttpStatusCode.Unauthorized);
-                var message = ((UnauthorizedException)context.Exception).Message;
-                response.Content = new StringContent(message);
-                context.Result = new CustomErrorResult(context.Request, response);
-
+                var response = context.Request.CreateResponse(HttpStatusCode.Unauthorized,
+                    new ErrorResponse
+                    {
+                        Message = context.Exception.Message,
+                        Code = "AuthorizationError"
+                    });
+                context.Result = new ResponseMessageResult(response);
                 Logger.Warn(context.Exception, "Authorisation error");
-
-                return;
             }
 
             if (context.Exception is ResourceNotFoundException)
             {
-                var response = new HttpResponseMessage(HttpStatusCode.NotFound);
-                var message = ((ResourceNotFoundException)context.Exception).Message;
-                response.Content = new StringContent(message);
-                context.Result = new CustomErrorResult(context.Request, response);
-
+                var response = context.Request.CreateResponse(HttpStatusCode.NotFound,
+                    new ErrorResponse
+                    {
+                        Message = context.Exception.Message,
+                        Code = "ResourceNotFoundError"
+                    });
+                context.Result = new ResponseMessageResult(response);
                 Logger.Warn(context.Exception, "Unable to locate resource error");
-
-                return;
             }
 
             Logger.Error(context.Exception, "Unhandled exception");

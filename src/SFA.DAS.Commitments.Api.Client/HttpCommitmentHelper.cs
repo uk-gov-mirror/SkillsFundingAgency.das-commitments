@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using System;
+using Newtonsoft.Json;
 using SFA.DAS.Commitments.Api.Client.Interfaces;
 using SFA.DAS.Commitments.Api.Types;
 using SFA.DAS.Commitments.Api.Types.Apprenticeship;
@@ -8,16 +9,19 @@ using SFA.DAS.Commitments.Api.Types.ProviderPayment;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Net.Http;
-
+using Newtonsoft.Json.Linq;
 using SFA.DAS.Http;
 
 namespace SFA.DAS.Commitments.Api.Client
 {
     internal class HttpCommitmentHelper : ApiClientBase, IHttpCommitmentHelper
     {
+        private readonly HttpClient _client;
+
         internal HttpCommitmentHelper(HttpClient client)
             : base(client)
         {
+            _client = client;
         }
 
         public async Task<CommitmentView> PostCommitment(string url, CommitmentRequest commitment)
@@ -28,11 +32,11 @@ namespace SFA.DAS.Commitments.Api.Client
             return JsonConvert.DeserializeObject<CommitmentView>(content);
         }
 
-        public async Task PatchCommitment(string url, CommitmentSubmission submision)
-        {
-            var data = JsonConvert.SerializeObject(submision);
-            await PatchAsync(url, data);
-        }
+        //public async Task PatchCommitment(string url, CommitmentSubmission submision)
+        //{
+        //    var data = JsonConvert.SerializeObject(submision);
+        //    await PatchAsync(url, data);
+        //}
 
         public async Task PutCommitment(string url, CommitmentStatus commitmentStatus)
         {
@@ -46,40 +50,40 @@ namespace SFA.DAS.Commitments.Api.Client
             await PatchAsync(url, data);
         }
 
-        public async Task<List<CommitmentListItem>> GetCommitments(string url)
-        {
-            var content = await GetAsync(url);
+        //public async Task<List<CommitmentListItem>> GetCommitments(string url)
+        //{
+        //    var content = await GetAsync(url);
 
-            return JsonConvert.DeserializeObject<List<CommitmentListItem>>(content);
-        }
+        //    return JsonConvert.DeserializeObject<List<CommitmentListItem>>(content);
+        //}
 
-        public async Task<CommitmentView> GetCommitment(string url)
-        {
-            var content = await GetAsync(url);
+        //public async Task<CommitmentView> GetCommitment(string url)
+        //{
+        //    var content = await GetAsync(url);
 
-            return JsonConvert.DeserializeObject<CommitmentView>(content);
-        }
+        //    return JsonConvert.DeserializeObject<CommitmentView>(content);
+        //}
 
-        public async Task<List<Apprenticeship>> GetApprenticeships(string url)
-        {
-            var content = await GetAsync(url);
+        //public async Task<List<Apprenticeship>> GetApprenticeships(string url)
+        //{
+        //    var content = await GetAsync(url);
 
-            return JsonConvert.DeserializeObject<List<Apprenticeship>>(content);
-        }
+        //    return JsonConvert.DeserializeObject<List<Apprenticeship>>(content);
+        //}
 
-        public async Task<ApprenticeshipSearchResponse> GetApprenticeships(string url, ApprenticeshipSearchQuery apprenticeshipQuery)
-        {
-            var result = await GetAsync(url, apprenticeshipQuery);
+        //public async Task<ApprenticeshipSearchResponse> GetApprenticeships(string url, ApprenticeshipSearchQuery apprenticeshipQuery)
+        //{
+        //    var result = await GetAsync(url, apprenticeshipQuery);
 
-            return JsonConvert.DeserializeObject<ApprenticeshipSearchResponse>(result);
-        }
+        //    return JsonConvert.DeserializeObject<ApprenticeshipSearchResponse>(result);
+        //}
 
-        public async Task<Apprenticeship> GetApprenticeship(string url)
-        {
-            var content = await GetAsync(url);
+        //public async Task<Apprenticeship> GetApprenticeship(string url)
+        //{
+        //    var content = await GetAsync(url);
 
-            return JsonConvert.DeserializeObject<Apprenticeship>(content);
-        }
+        //    return JsonConvert.DeserializeObject<Apprenticeship>(content);
+        //}
 
         public async Task PutApprenticeship(string url, ApprenticeshipRequest apprenticeship)
         {
@@ -121,23 +125,23 @@ namespace SFA.DAS.Commitments.Api.Client
             await PostAsync(url, data);
         }
 
-        public async Task<ApprenticeshipUpdate> GetApprenticeshipUpdate(string url)
-        {
-            var content = await GetAsync(url);
-            return JsonConvert.DeserializeObject<ApprenticeshipUpdate>(content);
-        }
+        //public async Task<ApprenticeshipUpdate> GetApprenticeshipUpdate(string url)
+        //{
+        //    var content = await GetAsync(url);
+        //    return JsonConvert.DeserializeObject<ApprenticeshipUpdate>(content);
+        //}
 
-        public async Task PatchApprenticeshipUpdate(string url, ApprenticeshipUpdateSubmission submission)
-        {
-            var data = JsonConvert.SerializeObject(submission);
-            await PatchAsync(url, data);
-        }
+        //public async Task PatchApprenticeshipUpdate(string url, ApprenticeshipUpdateSubmission submission)
+        //{
+        //    var data = JsonConvert.SerializeObject(submission);
+        //    await PatchAsync(url, data);
+        //}
 
-        public async Task<IList<ProviderPaymentPriorityItem>> GetPaymentPriorityOrder(string url)
-        {
-            var content = await GetAsync(url);
-            return JsonConvert.DeserializeObject<List<ProviderPaymentPriorityItem>>(content);
-        }
+        //public async Task<IList<ProviderPaymentPriorityItem>> GetPaymentPriorityOrder(string url)
+        //{
+        //    var content = await GetAsync(url);
+        //    return JsonConvert.DeserializeObject<List<ProviderPaymentPriorityItem>>(content);
+        //}
 
         public async Task PutPaymentPriorityOrder(string url, ProviderPaymentPrioritySubmission submission)
         {
@@ -153,16 +157,41 @@ namespace SFA.DAS.Commitments.Api.Client
             return JsonConvert.DeserializeObject<long>(content);
         }
 
-        public Task<string> GetBulkuploadFile(string url)
-        {
-            return GetAsync(url);
-        }
+        //public Task<string> GetBulkuploadFile(string url)
+        //{
+        //    return GetAsync(url);
+        //}
 
-        public async Task<List<ApprenticeshipStatusSummary>> GetEmployerAccountSummary(string url)
-        {
-            var content = await GetAsync(url);
+        //public async Task<List<ApprenticeshipStatusSummary>> GetEmployerAccountSummary(string url)
+        //{
+        //    var content = await GetAsync(url);
 
-            return JsonConvert.DeserializeObject<List<ApprenticeshipStatusSummary>>(content);
-        }
+        //    return JsonConvert.DeserializeObject<List<ApprenticeshipStatusSummary>>(content);
+        //}
+
+        //public async Task<T> GetAsync<T>(string url)
+        //{
+        //    HttpResponseMessage response = await _client.SendAsync(new HttpRequestMessage(HttpMethod.Get, url));
+        //    if (response.IsSuccessStatusCode)
+        //    {
+        //        return JsonConvert.DeserializeObject<T>(await response.Content.ReadAsStringAsync());
+        //    }
+
+        //    var content = await response.Content.ReadAsStringAsync();
+
+
+        //    JObject jObj = JObject.Parse(content);
+        //    if (jObj.HasValues)
+        //    {
+        //        var errorReponse = JsonConvert.DeserializeObject<ErrorResponse>(content);
+        //        throw new MyHttpRequestException(response.StatusCode, errorReponse);
+        //    }
+
+        //    if (response.Content != null)
+        //        response.Content.Dispose();
+
+        //    throw new HttpRequestException($"Invalid Http Request Status Code {response.StatusCode}");
+
+        //}
     }
 }

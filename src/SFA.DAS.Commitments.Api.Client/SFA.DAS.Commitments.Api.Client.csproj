@@ -61,6 +61,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ApiFaultException.cs" />
+    <Compile Include="Extensions\HttpResponseMessageExtensions.cs" />
+    <Compile Include="HttpClientHelper.cs" />
     <Compile Include="QueryStringHelper.cs" />
     <Compile Include="HttpCommitmentHelper.cs" />
     <Compile Include="EmployerCommitmentApi.cs" />
