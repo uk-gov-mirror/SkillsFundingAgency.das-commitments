@@ -19,7 +19,6 @@ namespace SFA.DAS.Commitments.Api.Client
     {
         private readonly ICommitmentsApiClientConfiguration _configuration;
 
-        private readonly IHttpCommitmentHelper _commitmentHelper;
         private readonly HttpClientHelper _httpClientHelper;
 
         public ProviderCommitmentsApi(HttpClient client, ICommitmentsApiClientConfiguration configuration)
@@ -31,7 +30,6 @@ namespace SFA.DAS.Commitments.Api.Client
                 throw new ArgumentNullException(nameof(client));
 
             _configuration = configuration;
-            _commitmentHelper = new HttpCommitmentHelper(client);
             _httpClientHelper = new HttpClientHelper(client);
         }
 
@@ -72,14 +70,15 @@ namespace SFA.DAS.Commitments.Api.Client
         {
             var url = $"{_configuration.BaseUrl}api/provider/{providerId}/commitments/{commitmentId}/apprenticeships";
 
-            await _commitmentHelper.PostApprenticeship(url, apprenticeship);
+            //await _commitmentHelper.PostApprenticeship(url, apprenticeship);
+            await _httpClientHelper.PostAsync(url, apprenticeship);
         }
 
         public async Task UpdateProviderApprenticeship(long providerId, long commitmentId, long apprenticeshipId, ApprenticeshipRequest apprenticeship)
         {
             var url = $"{_configuration.BaseUrl}api/provider/{providerId}/commitments/{commitmentId}/apprenticeships/{apprenticeshipId}";
 
-            await _commitmentHelper.PutApprenticeship(url, apprenticeship);
+            await _httpClientHelper.PutAsync(url, apprenticeship);
         }
 
         public async Task<List<CommitmentListItem>> GetProviderCommitments(long providerId)
@@ -102,21 +101,21 @@ namespace SFA.DAS.Commitments.Api.Client
         {
             var url = $"{_configuration.BaseUrl}api/provider/{providerId}/commitments/{commitmentId}/apprenticeships/bulk";
 
-            await _commitmentHelper.PostApprenticeships(url, bulkRequest);
+            await _httpClientHelper.PostAsync(url, bulkRequest);
         }
 
         public async Task DeleteProviderApprenticeship(long providerId, long apprenticeshipId, DeleteRequest deleteRequest)
         {
             var url = $"{_configuration.BaseUrl}api/provider/{providerId}/apprenticeships/{apprenticeshipId}";
 
-            await _commitmentHelper.DeleteApprenticeship(url, deleteRequest);
+            await _httpClientHelper.DeleteAsync(url, deleteRequest);
         }
 
         public async Task<long> BulkUploadFile(long providerId, BulkUploadFileRequest bulkUploadFileRequest)
         {
             // ToDo: Do we need the commitment id?
             var url = $"{_configuration.BaseUrl}api/provider/{providerId}/bulkupload";
-            return await _commitmentHelper.PostBulkuploadFile(url, bulkUploadFileRequest);
+            return await _httpClientHelper.PostAsync<BulkUploadFileRequest, long>(url, bulkUploadFileRequest);
         }
 
         public async Task<string> BulkUploadFile(long providerId, long bulkUploadFileId)
@@ -130,7 +129,7 @@ namespace SFA.DAS.Commitments.Api.Client
         {
             var url = $"{_configuration.BaseUrl}api/provider/{providerId}/commitments/{commitmentId}";
 
-            await _commitmentHelper.DeleteCommitment(url, deleteRequest);
+            await _httpClientHelper.DeleteAsync(url, deleteRequest);
         }
 
         public async Task CreateApprenticeshipUpdate(long providerId, long apprenticeshipId, ApprenticeshipUpdateRequest apprenticeshipUpdateRequest)

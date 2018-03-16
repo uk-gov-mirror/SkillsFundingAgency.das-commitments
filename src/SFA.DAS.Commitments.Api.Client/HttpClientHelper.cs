@@ -23,11 +23,7 @@ namespace SFA.DAS.Commitments.Api.Client
             _queryStringHelper = new QueryStringHelperTemp();
         }
 
-        public async Task<T> GetAsync<T>(string url)
-        {
-            return await GetAsync<T>(url, null);
-        }
-
+        public Task<T> GetAsync<T>(string url) => GetAsync<T>(url, null);
 
         public async Task<T> GetAsync<T>(string url, object data)
         {
@@ -40,7 +36,7 @@ namespace SFA.DAS.Commitments.Api.Client
             else
             {
                 response = await this._client.SendAsync(new HttpRequestMessage(HttpMethod.Get,
-                    string.Format("{0}{1}", (object) url, (object) this._queryStringHelper.GetQueryString(data))));
+                    $"{url}{_queryStringHelper.GetQueryString(data)}"));
             }
 
             if (!response.IsSuccessStatusCode)
@@ -51,27 +47,31 @@ namespace SFA.DAS.Commitments.Api.Client
             return JsonConvert.DeserializeObject<T>(await response.Content.ReadAsStringAsync());
         }
 
-        public async Task PatchAsync<T>(string url, T data)
+        public Task PatchAsync<T>(string url, T data) => PostAsync(url, data, new HttpMethod("PATCH"));
+        public Task PostAsync<T>(string url, T data) => PostAsync(url, data, HttpMethod.Post);
+        public Task DeleteAsync(string url) => PostAsync(url, HttpMethod.Delete);
+        public Task DeleteAsync<T>(string url, T data) => PostAsync(url, data, HttpMethod.Delete);
+        public Task PutAsync<T>(string url, T data) => PostAsync(url, data, HttpMethod.Put);
+        public Task<TOutput> PostAsync<TInput, TOutput>(string url, TInput data) => PostAsync<TInput, TOutput>(url, data, HttpMethod.Post);
+
+        private async Task<TOutput> PostAsync<TInput, TOutput>(string url, TInput data, HttpMethod method)
         {
             string json = JsonConvert.SerializeObject(data);
 
-            HttpResponseMessage response = await this._client.SendAsync(new HttpRequestMessage(new HttpMethod("PATCH"), url)
+            HttpResponseMessage response = await this._client.SendAsync(new HttpRequestMessage(method, url)
             {
-                Content = (HttpContent)new StringContent(json, Encoding.UTF8, "application/json")
+                Content = new StringContent(json, Encoding.UTF8, "application/json")
             });
 
             if (!response.IsSuccessStatusCode)
             {
                 await HandleException(response);
             }
+
+            return JsonConvert.DeserializeObject<TOutput>(await response.Content.ReadAsStringAsync());
         }
 
-        public async Task PostAsync<T>(string url, T data)
-        {
-            await PostAsync(url, data, HttpMethod.Get);
-        }
-
-        public async Task PostAsync<T>(string url, T data, HttpMethod method)
+        private async Task PostAsync<T>(string url, T data, HttpMethod method)
         {
             string json = JsonConvert.SerializeObject(data);
 
@@ -85,6 +85,17 @@ namespace SFA.DAS.Commitments.Api.Client
                 await HandleException(response);
             }
         }
+
+        private async Task PostAsync(string url, HttpMethod method)
+        {
+            HttpResponseMessage response = await this._client.SendAsync(new HttpRequestMessage(method, url));
+
+            if (!response.IsSuccessStatusCode)
+            {
+                await HandleException(response);
+            }
+        }
+
 
         private async Task HandleException(HttpResponseMessage response)
         {

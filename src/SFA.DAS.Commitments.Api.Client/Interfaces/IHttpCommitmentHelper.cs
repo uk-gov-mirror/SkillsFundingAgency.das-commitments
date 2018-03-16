@@ -30,9 +30,9 @@ namespace SFA.DAS.Commitments.Api.Client.Interfaces
 
         Task PutApprenticeship(string url, ApprenticeshipRequest apprenticeship);
 
-        Task<Apprenticeship> PostApprenticeship(string url, ApprenticeshipRequest apprenticeship);
+        //Task<Apprenticeship> PostApprenticeship(string url, ApprenticeshipRequest apprenticeship);
 
-        Task<Apprenticeship> PostApprenticeships(string url, BulkApprenticeshipRequest bulkRequest);
+        //Task<Apprenticeship> PostApprenticeships(string url, BulkApprenticeshipRequest bulkRequest);
 
         Task DeleteApprenticeship(string url, DeleteRequest deleteRequest);
 
@@ -48,7 +48,7 @@ namespace SFA.DAS.Commitments.Api.Client.Interfaces
 
         Task PutPaymentPriorityOrder(string url, ProviderPaymentPrioritySubmission submission);
 
-        Task<long> PostBulkuploadFile(string url, BulkUploadFileRequest bulkUploadFileRequest);
+        //Task<long> PostBulkuploadFile(string url, BulkUploadFileRequest bulkUploadFileRequest);
 
         //Task<string> GetBulkuploadFile(string url);
 

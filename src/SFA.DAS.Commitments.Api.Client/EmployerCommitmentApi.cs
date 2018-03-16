@@ -20,7 +20,6 @@ namespace SFA.DAS.Commitments.Api.Client
     {
         private readonly ICommitmentsApiClientConfiguration _configuration;
 
-        private readonly IHttpCommitmentHelper _commitmentHelper;
         private readonly HttpClientHelper _httpClientHelper;
 
         public EmployerCommitmentApi(HttpClient client, ICommitmentsApiClientConfiguration configuration)
@@ -28,7 +27,6 @@ namespace SFA.DAS.Commitments.Api.Client
         {
 
             _configuration = configuration;
-            _commitmentHelper = new HttpCommitmentHelper(client);
             _httpClientHelper = new HttpClientHelper(client);
         }
 
@@ -36,7 +34,6 @@ namespace SFA.DAS.Commitments.Api.Client
         {
             var url = $"{_configuration.BaseUrl}api/employer/{employerAccountId}/";
 
-            //return await _commitmentHelper.GetEmployerAccountSummary(url);
             return await _httpClientHelper.GetAsync<List<ApprenticeshipStatusSummary>>(url);
         }
 
@@ -44,14 +41,13 @@ namespace SFA.DAS.Commitments.Api.Client
         {
             var url = $"{_configuration.BaseUrl}api/employer/{employerAccountId}/commitments";
 
-            return await _commitmentHelper.PostCommitment(url, commitment);
+            return await _httpClientHelper.PostAsync<CommitmentRequest, CommitmentView>(url, commitment);
         }
 
         public async Task<List<CommitmentListItem>> GetEmployerCommitments(long employerAccountId)
         {
             var url = $"{_configuration.BaseUrl}api/employer/{employerAccountId}/commitments";
 
-            //return await _commitmentHelper.GetCommitments(url);
             return await _httpClientHelper.GetAsync<List<CommitmentListItem>>(url);
         }
 
@@ -79,7 +75,6 @@ namespace SFA.DAS.Commitments.Api.Client
         {
             var url = $"{_configuration.BaseUrl}api/employer/{employerAccountId}/apprenticeships/search";
 
-            // ?????? Parameterreturn await _commitmentHelper.GetApprenticeships(url, apprenticeshipSearchQuery);
             return await _httpClientHelper.GetAsync<ApprenticeshipSearchResponse>(url, apprenticeshipSearchQuery);
         }
 
@@ -87,7 +82,6 @@ namespace SFA.DAS.Commitments.Api.Client
         {
             var url = $"{_configuration.BaseUrl}api/employer/{employerAccountId}/apprenticeships/{apprenticeshipId}";
 
-            //return await _commitmentHelper.GetApprenticeship(url);
             return await _httpClientHelper.GetAsync<Apprenticeship>(url);
         }
 
@@ -95,7 +89,6 @@ namespace SFA.DAS.Commitments.Api.Client
         {
             var url = $"{_configuration.BaseUrl}api/employer/{employerAccountId}/commitments/{commitmentId}";
 
-            //await _commitmentHelper.PatchCommitment(url, submission);
             await _httpClientHelper.PatchAsync(url, submission);
 
         }
@@ -104,7 +97,6 @@ namespace SFA.DAS.Commitments.Api.Client
         {
             var url = $"{_configuration.BaseUrl}api/employer/{employerAccountId}/apprenticeships/uln/{uln}";
 
-            //return await _commitmentHelper.GetApprenticeships(url);
             return await _httpClientHelper.GetAsync<IList<Apprenticeship>>(url);
         }
 
@@ -112,14 +104,14 @@ namespace SFA.DAS.Commitments.Api.Client
         {
             var url = $"{_configuration.BaseUrl}api/employer/{employerAccountId}/commitments/{commitmentId}/apprenticeships";
 
-            await _commitmentHelper.PostApprenticeship(url, apprenticeship);
+            await _httpClientHelper.PostAsync(url, apprenticeship);
         }
 
         public async Task UpdateEmployerApprenticeship(long employerAccountId, long commitmentId, long apprenticeshipId, ApprenticeshipRequest apprenticeship)
         {
             var url = $"{_configuration.BaseUrl}api/employer/{employerAccountId}/commitments/{commitmentId}/apprenticeships/{apprenticeshipId}";
 
-            await _commitmentHelper.PutApprenticeship(url, apprenticeship);
+            await _httpClientHelper.PutAsync(url, apprenticeship);
         }
 
         public async Task PatchEmployerApprenticeship(long employerAccountId, long apprenticeshipId, ApprenticeshipSubmission apprenticeshipSubmission)
@@ -134,14 +126,14 @@ namespace SFA.DAS.Commitments.Api.Client
         {
             var url = $"{_configuration.BaseUrl}api/employer/{employerAccountId}/apprenticeships/{apprenticeshipId}";
 
-            await _commitmentHelper.DeleteApprenticeship(url, deleteRequest);
+            await _httpClientHelper.DeleteAsync(url, deleteRequest);
         }
 
         public async Task DeleteEmployerCommitment(long employerAccountId, long commitmentId, DeleteRequest deleteRequest)
         {
             var url = $"{_configuration.BaseUrl}api/employer/{employerAccountId}/commitments/{commitmentId}";
 
-            await _commitmentHelper.DeleteCommitment(url, deleteRequest);
+            await _httpClientHelper.DeleteAsync(url, deleteRequest);
         }
 
         public async Task CreateApprenticeshipUpdate(long employerAccountId, long apprenticeshipId, ApprenticeshipUpdateRequest apprenticeshipUpdateRequest)
@@ -181,7 +173,7 @@ namespace SFA.DAS.Commitments.Api.Client
         {
             var url = $"{_configuration.BaseUrl}api/employer/{employerAccountId}/customproviderpaymentpriority/";
 
-            await _commitmentHelper.PutPaymentPriorityOrder(url, submission);
+            await _httpClientHelper.PutAsync(url, submission);
         }
 
         public async Task<IEnumerable<PriceHistory>> GetPriceHistory(long employerAccountId, long apprenticeshipId)
