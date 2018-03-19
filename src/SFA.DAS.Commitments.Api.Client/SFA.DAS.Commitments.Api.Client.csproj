@@ -61,13 +61,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ApiFaultException.cs" />
+    <Compile Include="Core\CommitmentsApiException.cs" />
+    <Compile Include="Core\ApiFaultException.cs" />
     <Compile Include="Extensions\HttpResponseMessageExtensions.cs" />
-    <Compile Include="HttpClientHelper.cs" />
+    <Compile Include="Core\HttpClientHelper.cs" />
     <Compile Include="QueryStringHelper.cs" />
-    <Compile Include="HttpCommitmentHelper.cs" />
     <Compile Include="EmployerCommitmentApi.cs" />
-    <Compile Include="Interfaces\IHttpCommitmentHelper.cs" />
     <Compile Include="Interfaces\IEmployerCommitmentApi.cs" />
     <Compile Include="Interfaces\IRelationshipApi.cs" />
     <Compile Include="Interfaces\IValidationApi.cs" />

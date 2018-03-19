@@ -1,8 +1,8 @@
 ﻿using System.Net;
 using System.Net.Http;
-using SFA.DAS.Commitments.Api.Types;
+using SFA.DAS.Commitments.Api.Types.Core;
 
-namespace SFA.DAS.Commitments.Api.Client
+namespace SFA.DAS.Commitments.Api.Client.Core
 {
     public class ApiFaultException : HttpRequestException
     {

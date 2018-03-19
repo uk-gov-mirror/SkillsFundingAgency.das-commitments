@@ -10,7 +10,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 
 using Newtonsoft.Json;
-
+using SFA.DAS.Commitments.Api.Client.Core;
 using SFA.DAS.Commitments.Api.Types.DataLock;
 using SFA.DAS.Http;
 

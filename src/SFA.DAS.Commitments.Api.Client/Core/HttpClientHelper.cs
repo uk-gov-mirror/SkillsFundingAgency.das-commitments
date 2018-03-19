@@ -2,15 +2,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Newtonsoft.Json;
-using SFA.DAS.Commitments.Api.Types;
-using System.Threading.Tasks;
 using System.Net.Http;
 using System.Reflection;
 using System.Text;
+using System.Threading.Tasks;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using SFA.DAS.Commitments.Api.Types;
+using SFA.DAS.Commitments.Api.Types.Core;
 
-namespace SFA.DAS.Commitments.Api.Client
+namespace SFA.DAS.Commitments.Api.Client.Core
 {
     internal class HttpClientHelper 
     {

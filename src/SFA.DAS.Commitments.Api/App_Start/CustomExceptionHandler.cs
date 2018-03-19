@@ -1,10 +1,9 @@
 ﻿using System.Net;
 using System.Net.Http;
-using System.Web.Http;
 using System.Web.Http.ExceptionHandling;
 using System.Web.Http.Results;
 using FluentValidation;
-using SFA.DAS.Commitments.Api.Types;
+using SFA.DAS.Commitments.Api.Types.Core;
 using SFA.DAS.Commitments.Application.Exceptions;
 using SFA.DAS.NLog.Logger;
 
@@ -22,31 +21,44 @@ namespace SFA.DAS.Commitments.Api
                     new ErrorResponse
                     {
                         Message = context.Exception.Message,
-                        Code = "ValidationError"
+                        Code = "ValidationError",
+                        DomainExceptionId = (context.Exception as DomainException)?.DomainExceptionId
                     });
                 context.Result = new ResponseMessageResult(response);
                 Logger.Warn(context.Exception, "Validation error");
             }
-
-            if (context.Exception is UnauthorizedException)
+            else if (context.Exception is UnauthorizedException)
             {
                 var response = context.Request.CreateResponse(HttpStatusCode.Unauthorized,
                     new ErrorResponse
                     {
                         Message = context.Exception.Message,
-                        Code = "AuthorizationError"
+                        Code = "AuthorizationError",
+                        DomainExceptionId = (context.Exception as DomainException)?.DomainExceptionId
                     });
                 context.Result = new ResponseMessageResult(response);
                 Logger.Warn(context.Exception, "Authorisation error");
             }
-
-            if (context.Exception is ResourceNotFoundException)
+            else if (context.Exception is ResourceNotFoundException)
             {
                 var response = context.Request.CreateResponse(HttpStatusCode.NotFound,
                     new ErrorResponse
                     {
                         Message = context.Exception.Message,
-                        Code = "ResourceNotFoundError"
+                        Code = "ResourceNotFoundError",
+                        DomainExceptionId = (context.Exception as DomainException)?.DomainExceptionId
+                    });
+                context.Result = new ResponseMessageResult(response);
+                Logger.Warn(context.Exception, "Unable to locate resource error");
+            }
+            else if (context.Exception is DomainException)
+            {
+                var response = context.Request.CreateResponse(HttpStatusCode.NotFound,
+                    new ErrorResponse
+                    {
+                        Message = context.Exception.Message,
+                        Code = "ResourceNotFoundError",
+                        DomainExceptionId = (context.Exception as DomainException)?.DomainExceptionId
                     });
                 context.Result = new ResponseMessageResult(response);
                 Logger.Warn(context.Exception, "Unable to locate resource error");
