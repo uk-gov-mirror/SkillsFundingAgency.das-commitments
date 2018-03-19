@@ -48,6 +48,7 @@
     <Compile Include="Core\DomainException.cs" />
     <Compile Include="Core\ErrorCodes.cs" />
     <Compile Include="Core\ErrorResponse.cs" />
+    <Compile Include="Core\ErrorResponses.cs" />
     <Compile Include="AgreementStatus.cs" />
     <Compile Include="ApprenticeshipStatusSummary.cs" />
     <Compile Include="Apprenticeship\Apprenticeship.cs" />
@@ -91,7 +92,7 @@
     <Compile Include="DataLock\Types\TriageStatus.cs" />
     <Compile Include="DeleteRequest.cs" />
     <Compile Include="Commitment\Types\EditStatus.cs" />
-    <Compile Include="DomainExceptions.cs" />
+    <Compile Include="DomainExceptionIds.cs" />
     <Compile Include="History\Types\ApprenticeshipChangeType.cs" />
     <Compile Include="History\ApprenticeshipHistoryItem.cs" />
     <Compile Include="History\Types\CommitmentChangeType.cs" />

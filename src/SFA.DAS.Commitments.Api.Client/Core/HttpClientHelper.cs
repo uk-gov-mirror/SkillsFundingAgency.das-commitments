@@ -106,8 +106,8 @@ namespace SFA.DAS.Commitments.Api.Client.Core
             JObject jObj = JObject.Parse(content);
             if (jObj.HasValues)
             {
-                var errorReponse = JsonConvert.DeserializeObject<ErrorResponse>(content);
-                throw new ApiFaultException(response.StatusCode, errorReponse);
+                var errorReponses = JsonConvert.DeserializeObject<ErrorResponses>(content);
+                throw new ApiFaultException(response.StatusCode, errorReponses);
             }
 
             if (response.Content != null)

@@ -7,7 +7,7 @@ namespace SFA.DAS.Commitments.Api.Client.Core
     public class ApiFaultException : HttpRequestException
     {
         private readonly HttpStatusCode _httpStatusCode;
-        private readonly ErrorResponse _errorResponse;
+        private readonly ErrorResponses _errorResponses;
 
         public ApiFaultException(HttpStatusCode httpStatusCode) : base()
         {
@@ -17,10 +17,10 @@ namespace SFA.DAS.Commitments.Api.Client.Core
         {
             _httpStatusCode = httpStatusCode;
         }
-        public ApiFaultException(HttpStatusCode httpStatusCode, ErrorResponse errorResponse) : base("API Fault")
+        public ApiFaultException(HttpStatusCode httpStatusCode, ErrorResponses errorResponses) : base("API Fault")
         {
             _httpStatusCode = httpStatusCode;
-            _errorResponse = errorResponse;
+            _errorResponses = errorResponses;
         }
     }
 }

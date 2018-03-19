@@ -9,7 +9,7 @@ namespace SFA.DAS.Commitments.Api.Client.Core
         public CommitmentsApiException(HttpStatusCode httpStatusCode, string message) : base(httpStatusCode, message)
         {
         }
-        public CommitmentsApiException(HttpStatusCode httpStatusCode, ErrorResponse errorResponse) : base(httpStatusCode, errorResponse)
+        public CommitmentsApiException(HttpStatusCode httpStatusCode, ErrorResponses errorResponses) : base(httpStatusCode, errorResponses)
         {
         }
     }

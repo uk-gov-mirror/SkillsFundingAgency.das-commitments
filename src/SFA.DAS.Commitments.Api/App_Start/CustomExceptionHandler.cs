@@ -39,6 +39,18 @@ namespace SFA.DAS.Commitments.Api
                 context.Result = new ResponseMessageResult(response);
                 Logger.Warn(context.Exception, "Authorisation error");
             }
+            else if (context.Exception is ValidationException)
+            {
+                var response = context.Request.CreateResponse(HttpStatusCode.Unauthorized,
+                    new ErrorResponse
+                    {
+                        Message = context.Exception.Message,
+                        Code = "AuthorizationError",
+                        DomainExceptionId = (context.Exception as DomainException)?.DomainExceptionId
+                    });
+                context.Result = new ResponseMessageResult(response);
+                Logger.Warn(context.Exception, "Authorisation error");
+            }
             else if (context.Exception is ResourceNotFoundException)
             {
                 var response = context.Request.CreateResponse(HttpStatusCode.NotFound,

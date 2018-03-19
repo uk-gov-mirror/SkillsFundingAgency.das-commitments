@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using FluentValidation.Results;
+using SFA.DAS.Commitments.Api.Types.Core;
 
 namespace SFA.DAS.Commitments.Application.Exceptions
 {
-    public class InvalidRequestException : Exception
+    public class InvalidRequestException : DomainException
     {
         public Dictionary<string, string> ErrorMessages { get; private set; }
 

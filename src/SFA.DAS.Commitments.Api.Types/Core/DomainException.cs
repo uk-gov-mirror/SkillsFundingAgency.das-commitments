@@ -4,9 +4,15 @@ namespace SFA.DAS.Commitments.Api.Types.Core
 {
     public class DomainException : Exception
     {
-        public int DomainExceptionId { get; }
+        public int? DomainExceptionId { get; }
 
-        public DomainException(int domainExceptionId, string message) : base(message)
+        public DomainException() : base()
+        {
+        }
+        public DomainException(string message) : base(message)
+        {
+        }
+        public DomainException(int domainExceptionId, string message) : this(message)
         {
             DomainExceptionId = domainExceptionId;
         }
