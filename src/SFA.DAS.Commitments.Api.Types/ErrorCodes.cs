@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.Commitments.Api.Types.Core
+﻿namespace SFA.DAS.Commitments.Api.Types
 {
     public static class ErrorCodes
     {

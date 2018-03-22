@@ -80,7 +80,7 @@ namespace SFA.DAS.Commitments.Infrastructure.Data
             }
             catch (Exception ex) when (ex.InnerException is SqlException && IsConstraintError(ex.InnerException as SqlException))
             {
-                throw new RepositoryConstraintException("Unable to insert datalockstatus record", ex);
+                throw new RepositoryConstraintException(DomainExceptionIds.UnableToUpdateExceptionDataLockStatus, "Unable to insert datalockstatus record", ex);
             }
         }
 
@@ -214,7 +214,7 @@ namespace SFA.DAS.Commitments.Infrastructure.Data
             }
             catch (Exception ex) when (ex.InnerException is SqlException )
             {
-                throw new RepositoryConstraintException("Unable to update datalockstatus record to expire record", ex);
+                throw new RepositoryConstraintException(DomainExceptionIds.UnableToUpdateExceptionDataLockStatus, "Unable to update datalockstatus record to expire record", ex);
             }
         }
     }

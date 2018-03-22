@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace SFA.DAS.Commitments.Api.Types.Core
+namespace SFA.DAS.Core.Common
 {
     public class ErrorResponses
     {

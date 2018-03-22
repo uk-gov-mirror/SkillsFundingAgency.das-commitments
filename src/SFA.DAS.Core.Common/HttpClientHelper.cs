@@ -8,17 +8,15 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using SFA.DAS.Commitments.Api.Types;
-using SFA.DAS.Commitments.Api.Types.Core;
 
-namespace SFA.DAS.Commitments.Api.Client.Core
+namespace SFA.DAS.Core.Common
 {
-    internal class HttpClientHelper 
+    public class HttpClientHelper 
     {
         private readonly HttpClient _client;
         private readonly QueryStringHelperTemp _queryStringHelper;
 
-        internal HttpClientHelper(HttpClient client)
+        public HttpClientHelper(HttpClient client)
         {
             _client = client;
             _queryStringHelper = new QueryStringHelperTemp();
@@ -118,7 +116,7 @@ namespace SFA.DAS.Commitments.Api.Client.Core
         }
     }
 
-
+    // This is to be replaced by real helper class
     internal sealed class QueryStringHelperTemp
     {
         public string GetQueryString(object obj)

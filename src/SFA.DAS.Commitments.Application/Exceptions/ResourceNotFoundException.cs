@@ -1,5 +1,5 @@
 ﻿using System;
-using SFA.DAS.Commitments.Api.Types.Core;
+using SFA.DAS.Core.Common;
 
 namespace SFA.DAS.Commitments.Application.Exceptions
 {

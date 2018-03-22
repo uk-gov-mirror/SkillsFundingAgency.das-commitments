@@ -64,6 +64,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "demo", "demo\demo.csproj", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleDemo", "ConsoleDemo\ConsoleDemo.csproj", "{C4DE63F8-FE00-424F-851F-679F0EA66D36}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Core.Common", "SFA.DAS.Core.Common\SFA.DAS.Core.Common.csproj", "{814360E9-4C97-425A-BB8D-3860DBC287D9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -167,6 +169,10 @@ Global
 		{C4DE63F8-FE00-424F-851F-679F0EA66D36}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C4DE63F8-FE00-424F-851F-679F0EA66D36}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C4DE63F8-FE00-424F-851F-679F0EA66D36}.Release|Any CPU.Build.0 = Release|Any CPU
+		{814360E9-4C97-425A-BB8D-3860DBC287D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{814360E9-4C97-425A-BB8D-3860DBC287D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{814360E9-4C97-425A-BB8D-3860DBC287D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{814360E9-4C97-425A-BB8D-3860DBC287D9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

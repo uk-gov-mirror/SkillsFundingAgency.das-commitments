@@ -128,6 +128,7 @@
     <Compile Include="Entities\TransferApprovalStatus.cs" />
     <Compile Include="Entities\UpdateOrigin.cs" />
     <Compile Include="Entities\Validation\ValidationFailReason.cs" />
+    <Compile Include="Exceptions\DomainExceptionIds.cs" />
     <Compile Include="Exceptions\RepositoryConstraintException.cs" />
     <Compile Include="Extensions\ApprenticeshipExtensions.cs" />
     <Compile Include="Extensions\DataLockExtensions.cs" />
@@ -147,6 +148,12 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SFA.DAS.Core.Common\SFA.DAS.Core.Common.csproj">
+      <Project>{814360e9-4c97-425a-bb8d-3860dbc287d9}</Project>
+      <Name>SFA.DAS.Core.Common</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

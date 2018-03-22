@@ -12,6 +12,7 @@ using SFA.DAS.Commitments.Api.Types;
 using SFA.DAS.Commitments.Api.Types.Apprenticeship;
 using SFA.DAS.Commitments.Api.Types.Commitment;
 using SFA.DAS.Commitments.Api.Types.DataLock;
+using SFA.DAS.Core.Common;
 using SFA.DAS.Http;
 
 namespace SFA.DAS.Commitments.Api.Client

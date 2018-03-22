@@ -3,8 +3,8 @@ using System.Net.Http;
 using System.Web.Http.ExceptionHandling;
 using System.Web.Http.Results;
 using FluentValidation;
-using SFA.DAS.Commitments.Api.Types.Core;
 using SFA.DAS.Commitments.Application.Exceptions;
+using SFA.DAS.Core.Common;
 using SFA.DAS.NLog.Logger;
 
 namespace SFA.DAS.Commitments.Api

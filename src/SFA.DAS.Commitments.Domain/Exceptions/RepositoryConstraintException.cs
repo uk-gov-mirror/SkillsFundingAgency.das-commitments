@@ -1,18 +1,19 @@
 ﻿using System;
+using SFA.DAS.Core.Common;
 
 namespace SFA.DAS.Commitments.Domain.Exceptions
 {
     [Serializable]
-    public class RepositoryConstraintException : Exception
+    public class RepositoryConstraintException : DomainException
     {
         public RepositoryConstraintException() { }
 
-        public RepositoryConstraintException(string message) : base(message) { }
+        public RepositoryConstraintException(int domainExceptionId, string message) : base(domainExceptionId, message) { }
 
-        public RepositoryConstraintException(string message, Exception inner) : base(message, inner) { }
+        public RepositoryConstraintException(int domainExceptionId, string message, Exception inner) : base(domainExceptionId, message, inner) { }
 
-        protected RepositoryConstraintException(
-          System.Runtime.Serialization.SerializationInfo info,
-          System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
+        //protected RepositoryConstraintException(
+        //  System.Runtime.Serialization.SerializationInfo info,
+        //  System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
     }
 }

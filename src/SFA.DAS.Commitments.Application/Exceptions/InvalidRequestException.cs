@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using FluentValidation.Results;
-using SFA.DAS.Commitments.Api.Types.Core;
+using SFA.DAS.Core.Common;
 
 namespace SFA.DAS.Commitments.Application.Exceptions
 {

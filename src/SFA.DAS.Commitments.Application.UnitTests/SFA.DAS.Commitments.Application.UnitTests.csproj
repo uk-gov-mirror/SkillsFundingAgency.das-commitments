@@ -256,6 +256,10 @@
       <Project>{7c2c2688-abf9-4a08-9fc3-ba169a5888c4}</Project>
       <Name>SFA.DAS.Commitments.Infrastructure</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.Core.Common\SFA.DAS.Core.Common.csproj">
+      <Project>{814360e9-4c97-425a-bb8d-3860dbc287d9}</Project>
+      <Name>SFA.DAS.Core.Common</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />

@@ -45,10 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Core\DomainException.cs" />
-    <Compile Include="Core\ErrorCodes.cs" />
-    <Compile Include="Core\ErrorResponse.cs" />
-    <Compile Include="Core\ErrorResponses.cs" />
+    <Compile Include="ErrorCodes.cs" />
     <Compile Include="AgreementStatus.cs" />
     <Compile Include="ApprenticeshipStatusSummary.cs" />
     <Compile Include="Apprenticeship\Apprenticeship.cs" />
@@ -123,7 +120,12 @@
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\SFA.DAS.Core.Common\SFA.DAS.Core.Common.csproj">
+      <Project>{814360e9-4c97-425a-bb8d-3860dbc287d9}</Project>
+      <Name>SFA.DAS.Core.Common</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

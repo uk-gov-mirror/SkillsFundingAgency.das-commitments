@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using SFA.DAS.Commitments.Api.Client.Core;
 using SFA.DAS.Commitments.Api.Types.DataLock;
+using SFA.DAS.Core.Common;
 using SFA.DAS.Http;
 
 namespace SFA.DAS.Commitments.Api.Client

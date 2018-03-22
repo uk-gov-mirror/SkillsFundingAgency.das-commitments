@@ -1,6 +1,6 @@
 ﻿using System.Net;
 using System.Net.Http;
-using SFA.DAS.Commitments.Api.Types.Core;
+using SFA.DAS.Core.Common;
 
 namespace SFA.DAS.Commitments.Api.Client.Core
 {
