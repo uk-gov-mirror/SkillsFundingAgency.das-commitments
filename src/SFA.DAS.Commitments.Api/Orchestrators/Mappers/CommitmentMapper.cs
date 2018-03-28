@@ -41,6 +41,8 @@ namespace SFA.DAS.Commitments.Api.Orchestrators.Mappers
                 ApprenticeshipCount = source.ApprenticeshipCount,
                 AgreementStatus = (Types.AgreementStatus) source.AgreementStatus,
                 LastAction = (Types.Commitment.Types.LastAction) source.LastAction,
+                TransferSenderId = source.TransferSenderId,
+                TransferApprovalStatus = (Types.TransferApprovalStatus)source.TransferApprovalStatus,
                 CanBeApproved = callerType == CallerType.Employer
                         ? source.EmployerCanApproveCommitment
                         : source.ProviderCanApproveCommitment,
