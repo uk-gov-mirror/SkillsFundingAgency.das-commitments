@@ -75,6 +75,18 @@ namespace SFA.DAS.Commitments.Api
                 context.Result = new ResponseMessageResult(response);
                 Logger.Warn(context.Exception, "Unable to locate resource error");
             }
+            else
+            {
+                var response = context.Request.CreateResponse(HttpStatusCode.InternalServerError,
+                    new ErrorResponse
+                    {
+                        Message = context.Exception.Message,
+                        Code = "InternalServerError"
+                    });
+                context.Result = new ResponseMessageResult(response);
+                Logger.Warn(context.Exception, "Unhandled Error");
+            }
+
 
             Logger.Error(context.Exception, "Unhandled exception");
 
