@@ -5,9 +5,9 @@ namespace SFA.DAS.Commitments.Application.Exceptions
 {
     public sealed class ResourceNotFoundException : DomainException
     {
-        public ResourceNotFoundException() : base() {}
+        public ResourceNotFoundException() : base(0) {}
 
-        public ResourceNotFoundException(string message) : base(message) {}
+        public ResourceNotFoundException(string message) : base(0, message) {}
         public ResourceNotFoundException(int domainExceptionId, string message) : base(domainExceptionId, message) {}
     }
 }

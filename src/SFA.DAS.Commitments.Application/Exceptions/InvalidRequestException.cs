@@ -14,7 +14,7 @@ namespace SFA.DAS.Commitments.Application.Exceptions
             : this(new Dictionary<string, string>()) {}
 
         public InvalidRequestException(Dictionary<string, string> errorMessages)
-            : base(BuildErrorMessage(errorMessages))
+            : base(0, BuildErrorMessage(errorMessages))
         {
             ErrorMessages = errorMessages;
         }

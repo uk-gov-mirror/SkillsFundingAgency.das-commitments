@@ -7,7 +7,7 @@ namespace SFA.DAS.Commitments.Application.Exceptions
     {
         public UnauthorizedException(int domainExceptionId) : base(domainExceptionId) {}
 
-        public UnauthorizedException(string message) : base(message) { }
+        public UnauthorizedException(string message) : base(0, message) { }
         public UnauthorizedException(int domainExceptionId, string message) : base(domainExceptionId, message) { }
     }
 }

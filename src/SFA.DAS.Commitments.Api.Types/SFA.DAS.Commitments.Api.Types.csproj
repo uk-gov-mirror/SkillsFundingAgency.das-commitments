@@ -89,7 +89,7 @@
     <Compile Include="DataLock\Types\TriageStatus.cs" />
     <Compile Include="DeleteRequest.cs" />
     <Compile Include="Commitment\Types\EditStatus.cs" />
-    <Compile Include="DomainExceptionIds.cs" />
+    <Compile Include="ApiExceptionIds.cs" />
     <Compile Include="History\Types\ApprenticeshipChangeType.cs" />
     <Compile Include="History\ApprenticeshipHistoryItem.cs" />
     <Compile Include="History\Types\CommitmentChangeType.cs" />
