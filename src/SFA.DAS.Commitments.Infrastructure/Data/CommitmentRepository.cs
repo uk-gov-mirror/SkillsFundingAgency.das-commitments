@@ -285,7 +285,7 @@ namespace SFA.DAS.Commitments.Infrastructure.Data
             return WithConnection(async c =>
             {
                 var parameters = new DynamicParameters();
-                parameters.Add($"@transferRequestId", transferRequestId);
+                parameters.Add("@transferRequestId", transferRequestId);
 
                 var results = await c.QueryAsync<TransferRequest>(
                     sql: $"[dbo].[GetTransferRequest]",
