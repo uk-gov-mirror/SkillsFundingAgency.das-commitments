@@ -203,6 +203,9 @@
                     },
                     "appServicePlanResourceGroup": {
                         "value": "[resourceGroup().name]"
+                    },
+                    "deployStagingSlot": {
+                        "value": false
                     }
                 }
             },
