@@ -1,0 +1,63 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "apiAppServiceName": {
+            "value": ""
+        },
+        "apiCustomHostname": {
+            "value": ""
+        },
+        "apiCertificateName": {
+            "value": ""
+        },
+        "apiCertificateResourceGroup": {
+            "value": ""
+        },
+        "workerAppServiceName": {
+            "value": ""
+        },
+        "workerAppServicePlanName": {
+            "value": ""
+        },
+        "sharedAppServicePlanName": {
+            "value": ""
+        },
+        "sharedAppServicePlanResourceGroup": {
+            "value": ""
+        },
+        "aseHostingEnvironmentName": {
+            "value": ""
+        },
+        "aseResourceGroup": {
+            "value": ""
+        },
+        "serviceBusNamespaceName": {
+            "value": ""
+        },
+        "environmentName": {
+            "value": ""
+        },
+        "configurationStorageConnectionString": {
+            "value": ""
+        },
+        "apiTokenSecret": {
+            "value": ""
+        },
+        "apiIssuer": {
+            "value": ""
+        },
+        "apiAudiences": {
+            "value": ""
+        },
+        "loggingRedisConnectionString": {
+            "value": ""
+        },
+        "loggingRedisKey": {
+            "value": ""
+        },
+        "currentTime": {
+            "value": ""
+        }
+    }
+}
