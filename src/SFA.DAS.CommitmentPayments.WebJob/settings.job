@@ -1,3 +1,4 @@
 ﻿{
-  "schedule": "* */20 * * * *"
+  "schedule": "* */20 * * * *",
+  "is_singleton": "true"
 }

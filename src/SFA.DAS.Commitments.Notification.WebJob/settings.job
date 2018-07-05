@@ -1,3 +1,4 @@
 ﻿{
-  "schedule": "0 0 7 * * MON-FRI"
+  "schedule": "0 0 7 * * MON-FRI",
+  "is_singleton": "true"
 }
