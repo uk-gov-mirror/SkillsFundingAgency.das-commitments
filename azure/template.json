@@ -179,6 +179,9 @@
                     },
                     "aspInstances": {
                         "value": 1
+                    },
+                    "nonASETier": {
+                        "value": "Basic"
                     }
                 }
             },
