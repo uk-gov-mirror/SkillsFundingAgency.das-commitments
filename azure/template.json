@@ -204,6 +204,30 @@
                     "appServicePlanResourceGroup": {
                         "value": "[resourceGroup().name]"
                     },
+                    "appServiceAppSettings": {
+                        "value": [
+                            {
+                                "name": "LocalConfig",
+                                "value": "false"
+                            },
+                            {
+                                "name": "LoggingRedisConnectionString",
+                                "value": "[parameters('loggingRedisConnectionString')]"
+                            },
+                            {
+                                "name": "LoggingRedisKey",
+                                "value": "[parameters('loggingRedisKey')]"
+                            },
+                            {
+                                "name": "ConfigurationStorageConnectionString",
+                                "value": "[parameters('configurationStorageConnectionString')]"
+                            },
+                            {
+                                "name": "EnvironmentName",
+                                "value": "[parameters('environmentName')]"
+                            }
+                        ]
+                    },
                     "deployStagingSlot": {
                         "value": false
                     }
