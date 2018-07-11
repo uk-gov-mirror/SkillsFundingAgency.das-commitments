@@ -74,7 +74,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "https://raw.githubusercontent.com/SkillsFundingAgency/devops-automation/add-new-generic-arm-templates/Infrastructure/Resources/ARM-Templates/application-insights.json",
+                    "uri": "https://raw.githubusercontent.com/SkillsFundingAgency/devops-automation/master/Infrastructure/Resources/ARM-Templates/application-insights.json",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -95,7 +95,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "https://raw.githubusercontent.com/SkillsFundingAgency/devops-automation/add-new-generic-arm-templates/Infrastructure/Resources/ARM-Templates/app-service.json",
+                    "uri": "https://raw.githubusercontent.com/SkillsFundingAgency/devops-automation/master/Infrastructure/Resources/ARM-Templates/app-service.json",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -161,7 +161,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "https://raw.githubusercontent.com/SkillsFundingAgency/devops-automation/add-new-generic-arm-templates/Infrastructure/Resources/ARM-Templates/app-service-plan.json",
+                    "uri": "https://raw.githubusercontent.com/SkillsFundingAgency/devops-automation/master/Infrastructure/Resources/ARM-Templates/app-service-plan.json",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -194,7 +194,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "https://raw.githubusercontent.com/SkillsFundingAgency/devops-automation/add-new-generic-arm-templates/Infrastructure/Resources/ARM-Templates/app-service.json",
+                    "uri": "https://raw.githubusercontent.com/SkillsFundingAgency/devops-automation/master/Infrastructure/Resources/ARM-Templates/app-service.json",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -247,7 +247,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "https://raw.githubusercontent.com/SkillsFundingAgency/devops-automation/add-new-generic-arm-templates/Infrastructure/Resources/ARM-Templates/service-bus.json",
+                    "uri": "https://raw.githubusercontent.com/SkillsFundingAgency/devops-automation/master/Infrastructure/Resources/ARM-Templates/service-bus.json",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
