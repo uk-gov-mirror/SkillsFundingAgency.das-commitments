@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using FluentValidation;
 using MediatR;
-using SFA.DAS.Commitments.Application.Commands.ApproveTransferRequest;
 using SFA.DAS.Commitments.Application.Exceptions;
 using SFA.DAS.Commitments.Application.Interfaces.ApprenticeshipEvents;
 using SFA.DAS.Commitments.Application.Rules;
@@ -22,17 +20,36 @@ namespace SFA.DAS.Commitments.Application.Commands.CohortApproval.EmployerApprov
         private readonly AbstractValidator<EmployerApproveCohortCommand> _validator;
         private readonly ICommitmentRepository _commitmentRepository;
         private readonly IMessagePublisher _messagePublisher;
+        private readonly ICommitmentsLogger _logger;
         private readonly HistoryService _historyService;
         private readonly CohortApprovalService _cohortApprovalService;
 
-        public EmployerApproveCohortCommandHandler(AbstractValidator<EmployerApproveCohortCommand> validator, ICommitmentRepository commitmentRepository, IApprenticeshipRepository apprenticeshipRepository, IApprenticeshipOverlapRules overlapRules, ICurrentDateTime currentDateTime, IHistoryRepository historyRepository, IApprenticeshipEventsList apprenticeshipEventsList, IApprenticeshipEventsPublisher apprenticeshipEventsPublisher, IMediator mediator, IMessagePublisher messagePublisher)
+        public EmployerApproveCohortCommandHandler(AbstractValidator<EmployerApproveCohortCommand> validator,
+            ICommitmentRepository commitmentRepository,
+            IApprenticeshipRepository apprenticeshipRepository,
+            IApprenticeshipOverlapRules overlapRules,
+            ICurrentDateTime currentDateTime,
+            IHistoryRepository historyRepository,
+            IApprenticeshipEventsList apprenticeshipEventsList,
+            IApprenticeshipEventsPublisher apprenticeshipEventsPublisher,
+            IMediator mediator,
+            IMessagePublisher messagePublisher,
+            ICommitmentsLogger logger)
         {
             _validator = validator;
             _commitmentRepository = commitmentRepository;
             _messagePublisher = messagePublisher;
+            _logger = logger;
             _historyService = new HistoryService(historyRepository);
             
-            _cohortApprovalService = new CohortApprovalService(apprenticeshipRepository, overlapRules, currentDateTime, commitmentRepository, apprenticeshipEventsList, apprenticeshipEventsPublisher, mediator);
+            _cohortApprovalService = new CohortApprovalService(apprenticeshipRepository,
+                overlapRules,
+                currentDateTime,
+                commitmentRepository,
+                apprenticeshipEventsList,
+                apprenticeshipEventsPublisher,
+                mediator,
+                _logger);
         }
 
         protected override async Task HandleCore(EmployerApproveCohortCommand message)
@@ -44,9 +61,11 @@ namespace SFA.DAS.Commitments.Application.Commands.CohortApproval.EmployerApprov
 
             var haveBothPartiesApproved = HaveBothPartiesApproved(commitment);
             var newAgreementStatus = DetermineNewAgreementStatus(haveBothPartiesApproved);
-            await _cohortApprovalService.UpdateApprenticeships(commitment, haveBothPartiesApproved, newAgreementStatus);
+
             await UpdateCommitment(commitment, haveBothPartiesApproved, message.UserId, message.LastUpdatedByName,
                 message.LastUpdatedByEmail, message.Message);
+
+            await _cohortApprovalService.UpdateApprenticeships(commitment, haveBothPartiesApproved, newAgreementStatus);
 
             if (haveBothPartiesApproved)
             {
@@ -131,11 +150,11 @@ namespace SFA.DAS.Commitments.Application.Commands.CohortApproval.EmployerApprov
             return commitment;
         }
 
-        private static void CheckEditStatus(Commitment commitment)
+        private void CheckEditStatus(Commitment commitment)
         {
-            if (commitment.EditStatus != EditStatus.Both && commitment.EditStatus != EditStatus.EmployerOnly)
+            if (commitment.EditStatus != EditStatus.EmployerOnly)
             {
-                throw new UnauthorizedException($"Employer not allowed to edit commitment: {commitment.Id}");
+                throw new InvalidOperationException($"Commitment {commitment.Id} cannot be approved by employer because EditStatus is {commitment.EditStatus}");
             }
         }
 
