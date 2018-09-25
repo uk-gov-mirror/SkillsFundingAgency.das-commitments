@@ -8,6 +8,8 @@ using Dapper;
 using SFA.DAS.Commitments.Domain;
 using SFA.DAS.Commitments.Domain.Data;
 using SFA.DAS.Commitments.Domain.Entities;
+using SFA.DAS.Commitments.Domain.Entities.ApprenticeshipSearch;
+using SFA.DAS.Commitments.Domain.Entities.ApprovedApprenticeshipViews;
 using SFA.DAS.Commitments.Domain.Interfaces;
 using SFA.DAS.Commitments.Infrastructure.Data.Transactions;
 using SFA.DAS.Sql.Client;
@@ -217,6 +219,42 @@ namespace SFA.DAS.Commitments.Infrastructure.Data
                 commandType: CommandType.Text));
 
             return results;
+        }
+
+        public async Task<IList<ProviderApprovedApprenticeship>> GetApprovedApprenticeshipsForProvider (long providerId)
+        {
+            return await WithConnection(async c =>
+            {
+                var parameters = new DynamicParameters();
+                parameters.Add("@providerId", providerId);
+                
+                const string sql = "GetApprovedApprenticeshipsForProvider";
+
+                var result = new List<ProviderApprovedApprenticeship>();
+
+                await c.QueryAsync<ProviderApprovedApprenticeship, DataLock, ProviderApprovedApprenticeship>
+                (sql, (apprenticeship, datalock) =>
+                {
+                    var thisApprenticeship = apprenticeship;
+                    if (!result.Exists(a => a.Id == thisApprenticeship.Id))
+                    { 
+                        result.Add(apprenticeship);
+                    }
+                    else
+                    {
+                        apprenticeship = result.Single(a => a.Id == thisApprenticeship.Id);
+                    }
+
+                    if (datalock.Id.HasValue)
+                    {
+                        apprenticeship.DataLocks.Add(datalock);
+                    }
+
+                    return apprenticeship;
+                }, parameters, commandType: CommandType.StoredProcedure);
+
+                return result;
+            });
         }
 
         public async Task UpdateApprenticeshipStatuses(List<Apprenticeship> apprenticeships)
@@ -657,6 +695,8 @@ namespace SFA.DAS.Commitments.Infrastructure.Data
                 };
             });
         }
+
+        
 
         private static IEnumerable<ApprenticeshipStatusSummary> MapToApprenticeshipStatusSummaries(IEnumerable<dynamic> results)
         {

@@ -2,6 +2,8 @@
 using System.Threading.Tasks;
 using SFA.DAS.Commitments.Domain.Entities;
 using System;
+using SFA.DAS.Commitments.Domain.Entities.ApprenticeshipSearch;
+using SFA.DAS.Commitments.Domain.Entities.ApprovedApprenticeshipViews;
 
 namespace SFA.DAS.Commitments.Domain.Data
 {
@@ -58,5 +60,7 @@ namespace SFA.DAS.Commitments.Domain.Data
         Task UpdateApprenticeshipStopDate(long commitmentId, long apprenticeshipId, DateTime stopDate);
 
         Task<IEnumerable<long>> GetEmployerAccountIds();
+
+        Task<IList<ProviderApprovedApprenticeship>> GetApprovedApprenticeshipsForProvider(long providerId);
     }
 }

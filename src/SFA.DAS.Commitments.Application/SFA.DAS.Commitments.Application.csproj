@@ -182,6 +182,9 @@
     <Compile Include="Queries\GetActiveApprenticeshipsByUln\GetActiveApprenticeshipsByUlnRequest.cs" />
     <Compile Include="Queries\GetActiveApprenticeshipsByUln\GetActiveApprenticeshipsByUlnResponse.cs" />
     <Compile Include="Queries\GetActiveApprenticeshipsByUln\GetActiveApprenticeshipsByUlnValidator.cs" />
+    <Compile Include="Queries\GetApprovedApprenticeshipsForProvider\GetApprovedApprenticeshipsForProviderQueryHandler.cs" />
+    <Compile Include="Queries\GetApprovedApprenticeshipsForProvider\GetApprovedApprenticeshipsForProviderRequest.cs" />
+    <Compile Include="Queries\GetApprovedApprenticeshipsForProvider\GetApprovedApprenticeshipsForProviderResponse.cs" />
     <Compile Include="Queries\GetBulkUploadFile\GetBulkUploadFileHandler.cs" />
     <Compile Include="Queries\GetBulkUploadFile\GetBulkUploadFileQuery.cs" />
     <Compile Include="Queries\GetBulkUploadFile\GetBulkUploadFileResponse.cs" />
@@ -292,7 +295,9 @@
       <Name>SFA.DAS.Commitments.Events</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Queries\SearchApprenticeships\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
