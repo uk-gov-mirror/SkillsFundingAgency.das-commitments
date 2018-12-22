@@ -11,12 +11,6 @@ namespace SFA.DAS.Commitments.Api
         {
             GlobalConfiguration.Configuration.Formatters.JsonFormatter.SerializerSettings.Converters.Add(new StrictEnumConverter());
 
-            var apiKeySecret = CloudConfigurationManager.GetSetting("ApiTokenSecret");
-            var apiIssuer = CloudConfigurationManager.GetSetting("ApiIssuer");
-            var apiAudiences = CloudConfigurationManager.GetSetting("ApiAudiences").Split(' ');
-
-            config.MessageHandlers.Add(new ApiKeyHandler("Authorization", apiKeySecret, apiIssuer, apiAudiences));
-
             config.MapHttpAttributeRoutes();
 
             config.Services.Replace(typeof(IExceptionHandler), new CustomExceptionHandler());
