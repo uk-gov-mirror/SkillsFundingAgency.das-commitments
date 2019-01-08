@@ -25,6 +25,7 @@ using SFA.DAS.Commitments.Api.Types.ProviderPayment;
 using SFA.DAS.Commitments.Application.Commands.UpdateCustomProviderPaymentPriority;
 using System.Collections.Generic;
 using SFA.DAS.Commitments.Api.Orchestrators.Mappers;
+using SFA.DAS.Commitments.Api.Orchestrators.Mappers.v2;
 using SFA.DAS.Commitments.Application.Commands.AcceptApprenticeshipChange;
 using SFA.DAS.Commitments.Application.Commands.CohortApproval.EmployerApproveCohort;
 using SFA.DAS.Commitments.Application.Commands.RejectApprenticeshipChange;
@@ -39,8 +40,11 @@ using SFA.DAS.Commitments.Application.Queries.GetTransferRequest;
 using SFA.DAS.Commitments.Application.Queries.GetTransferRequestsForReceiver;
 using SFA.DAS.Commitments.Application.Queries.GetTransferRequestsForSender;
 using SFA.DAS.Commitments.Domain.Entities;
+using SFA.DAS.Commitments.V2.Application.Queries.GetApprenticeship;
 using SFA.DAS.HashingService;
+using ApprenticeshipMapper = SFA.DAS.Commitments.Api.Orchestrators.Mappers.v2.ApprenticeshipMapper;
 using ApprenticeshipStatusSummary = SFA.DAS.Commitments.Domain.Entities.ApprenticeshipStatusSummary;
+using IApprenticeshipMapper = SFA.DAS.Commitments.Api.Orchestrators.Mappers.IApprenticeshipMapper;
 using Originator = SFA.DAS.Commitments.Api.Types.Apprenticeship.Types.Originator;
 using PaymentStatus = SFA.DAS.Commitments.Api.Types.Apprenticeship.Types.PaymentStatus;
 using ProviderPaymentPriorityItem = SFA.DAS.Commitments.Api.Types.ProviderPayment.ProviderPaymentPriorityItem;
@@ -56,6 +60,7 @@ namespace SFA.DAS.Commitments.Api.Orchestrators
         private readonly ICommitmentMapper _commitmentMapper;
         private readonly ITransferRequestMapper _transferRequestMapper;
         private readonly IHashingService _hashingService;
+        private readonly Mappers.v2.IApprenticeshipMapper _apprenticeshipMapperV2;
         private readonly FacetMapper _facetMapper;
         private readonly ApprenticeshipFilterService _apprenticeshipFilterService;
 
@@ -67,7 +72,8 @@ namespace SFA.DAS.Commitments.Api.Orchestrators
             IApprenticeshipMapper apprenticeshipMapper,
             ICommitmentMapper commitmentMapper,
             ITransferRequestMapper transferRequestMapper,
-            IHashingService hashingService)
+            IHashingService hashingService,
+            Mappers.v2.IApprenticeshipMapper apprenticeshipMapperV2)
         {
             _mediator = mediator;
             _logger = logger;
@@ -77,6 +83,7 @@ namespace SFA.DAS.Commitments.Api.Orchestrators
             _commitmentMapper = commitmentMapper;
             _transferRequestMapper = transferRequestMapper;
             _hashingService = hashingService;
+            _apprenticeshipMapperV2 = apprenticeshipMapperV2;
         }
 
         public async Task<IEnumerable<Commitment.CommitmentListItem>> GetCommitments(long accountId)
@@ -214,9 +221,27 @@ namespace SFA.DAS.Commitments.Api.Orchestrators
             }
 
             _logger.Info($"Retrieved apprenticeship {apprenticeshipId} for employer account {accountId}", accountId: accountId, apprenticeshipId: apprenticeshipId, commitmentId: response.Data.CommitmentId);
-           
+
             return _apprenticeshipMapper.MapFrom(response.Data, CallerType.Employer);
         }
+
+
+        //public async Task<Types.v2.Apprenticeship.Apprenticeship> GetApprenticeship(long accountId, long apprenticeshipId)
+        //{
+        //    _logger.Trace($"Getting apprenticeship {apprenticeshipId} for employer account {accountId}", accountId: accountId, apprenticeshipId: apprenticeshipId);
+
+        //    var response = await _mediator.SendAsync(new GetApprenticeshipQuery
+        //    {
+        //        Caller = new V2.Domain.Caller
+        //        {
+        //            CallerType = V2.Domain.Enums.CallerType.Employer,
+        //            Id = accountId
+        //        },
+        //        ApprenticeshipId = apprenticeshipId
+        //    });
+
+        //    return _apprenticeshipMapperV2.Map(response.Data);
+        //}
 
         public async Task<long> CreateApprenticeship(long accountId, long commitmentId, Apprenticeship.ApprenticeshipRequest apprenticeshipRequest)
         {

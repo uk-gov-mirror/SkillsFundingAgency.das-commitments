@@ -33,6 +33,7 @@ using StructureMap;
 using StructureMap.Graph;
 using SFA.DAS.Learners.Validators;
 using SFA.DAS.Commitments.Infrastructure.Services;
+using SFA.DAS.Commitments.V2.Domain.Interfaces;
 using SFA.DAS.HashingService;
 
 namespace SFA.DAS.Commitments.Api.DependencyResolution
@@ -76,6 +77,8 @@ namespace SFA.DAS.Commitments.Api.DependencyResolution
             For<IBulkUploadRepository>().Use<BulkUploadRepository>().Ctor<string>().Is(config.DatabaseConnectionString);
             For<IProviderPaymentRepository>().Use<ProviderPaymentRepository>().Ctor<string>().Is(config.DatabaseConnectionString);
             For<IStatisticsRepository>().Use<StatisticsRepository>().Ctor<string>().Is(config.DatabaseConnectionString);
+
+            For<IApprenticeshipReadStore>().Use<V2.Infrastructure.Data.ReadStores.ApprenticeshipReadStore>().Ctor<string>().Is(config.DatabaseConnectionString);
 
             For<SingleInstanceFactory>().Use<SingleInstanceFactory>(ctx => t => ctx.GetInstance(t));
             For<MultiInstanceFactory>().Use<MultiInstanceFactory>(ctx => t => ctx.GetAllInstances(t));

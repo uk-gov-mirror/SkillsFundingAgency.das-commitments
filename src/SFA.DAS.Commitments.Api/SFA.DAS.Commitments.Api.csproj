@@ -310,6 +310,7 @@
     <Compile Include="App_Start\CustomErrorResult.cs" />
     <Compile Include="App_Start\CustomExceptionHandler.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\EmployerV2ApprenticeshipController.cs" />
     <Compile Include="Controllers\StatisticsController.cs" />
     <Compile Include="Controllers\TransferController.cs" />
     <Compile Include="Controllers\EmployerController.cs" />
@@ -343,6 +344,12 @@
     <Compile Include="Orchestrators\Mappers\IApprenticeshipMapper.cs" />
     <Compile Include="Orchestrators\Mappers\ICommitmentMapper.cs" />
     <Compile Include="Orchestrators\Mappers\IDataLockMapper.cs" />
+    <Compile Include="Orchestrators\Mappers\v2\ApprenticeshipMapper.cs" />
+    <Compile Include="Orchestrators\Mappers\v2\DataLockMapper.cs" />
+    <Compile Include="Orchestrators\Mappers\v2\IApprenticeshipMapper.cs" />
+    <Compile Include="Orchestrators\Mappers\v2\IDataLockMapper.cs" />
+    <Compile Include="Orchestrators\Mappers\v2\IPriceEpisodeMapper.cs" />
+    <Compile Include="Orchestrators\Mappers\v2\PriceEpisodeMapper.cs" />
     <Compile Include="Orchestrators\ProviderOrchestrator.cs" />
     <Compile Include="Orchestrators\StatisticsOrchestrator.cs" />
     <Compile Include="Orchestrators\ValidationOrchestrator.cs" />
@@ -385,6 +392,18 @@
     <ProjectReference Include="..\SFA.DAS.Commitments.Infrastructure\SFA.DAS.Commitments.Infrastructure.csproj">
       <Project>{7c2c2688-abf9-4a08-9fc3-ba169a5888c4}</Project>
       <Name>SFA.DAS.Commitments.Infrastructure</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.Commitments.V2.Application\SFA.DAS.Commitments.V2.Application.csproj">
+      <Project>{1369e2ac-1486-4474-b276-22dfd06bd483}</Project>
+      <Name>SFA.DAS.Commitments.V2.Application</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.Commitments.V2.Domain\SFA.DAS.Commitments.V2.Domain.csproj">
+      <Project>{4aa94a1b-9ea0-4e21-abcf-42f0989320b2}</Project>
+      <Name>SFA.DAS.Commitments.V2.Domain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.Commitments.V2.Infrastructure\SFA.DAS.Commitments.V2.Infrastructure.csproj">
+      <Project>{61673073-8041-42c0-ac56-8a84ac6de26f}</Project>
+      <Name>SFA.DAS.Commitments.V2.Infrastructure</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
