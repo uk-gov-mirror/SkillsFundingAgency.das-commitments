@@ -368,7 +368,7 @@ Target "Run NUnit Tests" (fun _ ->
 
     let mutable shouldRunTests = false
 
-    let testDlls = !! ("./CommitmentsV2/*.UnitTests/bin/" + testDirectory + "/**/*.UnitTests.dll")
+    let testDlls = !! ("./**/*.UnitTests/bin/" + testDirectory + "/**/*.UnitTests.dll")
 
     for testDll in testDlls do
         shouldRunTests <- true
