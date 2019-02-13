@@ -379,7 +379,7 @@ Target "Run NUnit Tests" (fun _ ->
             {p with
                 ToolPath = nUnitRunnerLocation;
                 ShadowCopy = false;
-                Framework = Testing.NUnit3.NUnit3Runtime.Net45;
+                Framework = Testing.NUnit3.NUnit3Runtime.Other("netcoreapp2.2");
                 ResultSpecs = [("TestResult.xml;format=" + nunitTestFormat)];
                 })
 )
