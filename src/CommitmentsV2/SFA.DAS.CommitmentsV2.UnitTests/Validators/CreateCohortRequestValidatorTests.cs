@@ -87,6 +87,27 @@ namespace SFA.DAS.CommitmentsV2.UnitTests.Validators
             AssertValidationResult(request => request.OriginatorReference, originatorReference, expectedValid);
         }
 
+
+        [TestCase("Fred", "Flintstone", true)]
+        [TestCase("", "Flintstone", false)]
+        [TestCase("Fred", "", true)]
+        [TestCase(null, "Flintstone", false)]
+        [TestCase("XXXXXXXXX1XXXXXXXXX2XXXXXXXXX3XXXXXXXXX4XXXXXXXXX5XXXXXXXXX6XXXXXXXXX7XXXXXXXXX8XXXXXXXXX9XXXXXXXXX10", "Flintstone", false)]
+        public void Validate_FirstName_ShouldBeValidated(string firstname, string lastname, bool expectedValid)
+        {
+            AssertValidationResult(request => request.FirstName, new CreateCohortRequest {FirstName = firstname, LastName = lastname}, expectedValid);
+        }
+
+        [TestCase("Fred", "Flintstone", true)]
+        [TestCase("Fred", "", false)]
+        [TestCase("", "Flintstone", true)]
+        [TestCase("Fred", null, false)]
+        [TestCase("Fred", "XXXXXXXXX1XXXXXXXXX2XXXXXXXXX3XXXXXXXXX4XXXXXXXXX5XXXXXXXXX6XXXXXXXXX7XXXXXXXXX8XXXXXXXXX9XXXXXXXXX10", false)]
+        public void Validate_LastName_ShouldBeValidated(string firstname, string lastname, bool expectedValid)
+        {
+            AssertValidationResult(request => request.LastName, new CreateCohortRequest { FirstName = firstname, LastName = lastname }, expectedValid);
+        }
+
         private void AssertValidationResult<T>(Expression<Func<CreateCohortRequest,T>> property, T value, bool expectedValid)
         {
             // Arrange

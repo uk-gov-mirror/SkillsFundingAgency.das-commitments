@@ -7,10 +7,10 @@ namespace SFA.DAS.CommitmentsV2.Validators
     {
         public CreateCohortRequestValidator()
         {
-            RuleFor(model => model).SetValidator(new NameValidator());
             RuleFor(model => model).SetValidator(new UlnValidator());
             RuleFor(model => model.Cost).CostMustBeValid();
             RuleFor(model => model.OriginatorReference).ReferenceMustBeValidIfSupplied();
+            RuleFor(model => model.Names).NamesMustBeValid();
             RuleFor(model => model.UserId).NotEmpty().WithMessage("The user id must be supplied");
             RuleFor(model => model.AccountLegalEntityId).Must(accountLegalEntityId => accountLegalEntityId > 0).WithMessage("The Account Legal Entity must be valid"); 
             RuleFor(model => model.ProviderId).Must(providerId => providerId > 0).WithMessage("The provider id must be positive");
