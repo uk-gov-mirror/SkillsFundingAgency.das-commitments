@@ -42,12 +42,12 @@ namespace SFA.DAS.CommitmentsV2.Validators
                 .WithMessage("{PropertyValue} is invalid for {PropertyName} - it must be between {MinLength} and {MaxLength} characters");
         }
 
-        public static IRuleBuilderInitial<T, (string, string)> NamesMustBeValid<T>(this IRuleBuilderInitial<T, (string FirstName, string LastName)> ruleBuilder)
+        public static IRuleBuilderInitial<T, Names> NamesMustBeValid<T>(this IRuleBuilderInitial<T, Names> ruleBuilder)
         {
             return ruleBuilder.NamesMustBeValid(100);
         }
 
-        public static IRuleBuilderInitial<T, (string,string)> NamesMustBeValid<T>(this IRuleBuilderInitial<T, (string FirstName, string LastName)> ruleBuilder, int maxLength)
+        public static IRuleBuilderInitial<T, Names> NamesMustBeValid<T>(this IRuleBuilderInitial<T, Names> ruleBuilder, int maxLength)
         {
             return ruleBuilder.Custom((namesModel, context) =>
                     {
@@ -67,7 +67,7 @@ namespace SFA.DAS.CommitmentsV2.Validators
             if (name.Length > maxLength)
             {
                 context.MessageFormatter.AppendArgument("MaxLength", maxLength);
-                context.AddFailure(propertyName, "You must enter a last name that's no longer than {MaxLength characters");
+                context.AddFailure(propertyName, "You must enter a {PropertyName} that's no longer than {MaxLength characters");
             }
         }
     }
