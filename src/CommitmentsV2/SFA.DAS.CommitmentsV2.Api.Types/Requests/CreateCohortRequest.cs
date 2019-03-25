@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.CommitmentsV2.Api.Types.Requests
 {
-    public class CreateCohortRequest : IUln
+    public class CreateCohortRequest
     {
         public string UserId { get; set; }
         public long AccountLegalEntityId { get; set; }
@@ -17,12 +17,5 @@ namespace SFA.DAS.CommitmentsV2.Api.Types.Requests
         public DateTime? EndDate { get; set; }
         public string OriginatorReference { get; set; }
         public Guid ReservationId { get; set; }
-
-        /// <remarks>
-        ///     This groups the stuff together - it's a bit sucky in that this class
-        ///     is grouping these together to support the required validation
-        ///     but validation is not the concern of this class.
-        /// </remarks>>
-        public (string FirstName, string LastName) Names => (FirstName, LastName);
     }
 }

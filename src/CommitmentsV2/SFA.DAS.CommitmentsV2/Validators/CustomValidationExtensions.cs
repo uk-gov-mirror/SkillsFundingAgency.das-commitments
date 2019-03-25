@@ -2,6 +2,7 @@
 using FluentValidation;
 using FluentValidation.Validators;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
+using SFA.DAS.Learners.Validators;
 
 namespace SFA.DAS.CommitmentsV2.Validators
 {
@@ -42,6 +43,36 @@ namespace SFA.DAS.CommitmentsV2.Validators
                 .WithMessage("{PropertyValue} is invalid for {PropertyName} - it must be between {MinLength} and {MaxLength} characters");
         }
 
+        private static readonly Learners.Validators.UlnValidator UlnValidator = new Learners.Validators.UlnValidator();
+
+        public static IRuleBuilderOptions<T, string> UlnMustBeValid<T>(this IRuleBuilder<T, string> ruleBuilder)
+        {
+
+            return ruleBuilder
+                .Must((rootObject, uln, context) =>
+                {
+                    
+                    var ulnValidationResult = UlnValidator.Validate(uln);
+                    switch (ulnValidationResult)
+                    {
+                        case UlnValidationResult.IsEmptyUlnNumber:
+                            context.MessageFormatter.AppendArgument("UlnError","A Uln must not be empty");
+                            return false;
+
+                        case UlnValidationResult.IsInValidTenDigitUlnNumber:
+                            context.MessageFormatter.AppendArgument("UlnError", "A Uln must be 10 digits long");
+                            return false;
+
+                        case UlnValidationResult.IsInvalidUln:
+                            context.MessageFormatter.AppendArgument("UlnError", "The Uln is not valid");
+                            return false;
+                    }
+
+                    return true;
+                })
+                .WithMessage("{PropertyValue} is invalid for {PropertyName} - {UlnError}");
+        }
+
         public static IRuleBuilderInitial<T, Names> NamesMustBeValid<T>(this IRuleBuilderInitial<T, Names> ruleBuilder)
         {
             return ruleBuilder.NamesMustBeValid(100);
@@ -60,14 +91,13 @@ namespace SFA.DAS.CommitmentsV2.Validators
         {
             if (string.IsNullOrWhiteSpace(name))
             {
-                context.AddFailure(propertyName, "{PropertyName} must be supplied");
+                context.AddFailure(propertyName, $"{propertyName} must be supplied");
                 return;
             }
 
             if (name.Length > maxLength)
             {
-                context.MessageFormatter.AppendArgument("MaxLength", maxLength);
-                context.AddFailure(propertyName, "You must enter a {PropertyName} that's no longer than {MaxLength characters");
+                context.AddFailure(propertyName, $"You must enter a {propertyName} that's no longer than {maxLength} characters");
             }
         }
     }

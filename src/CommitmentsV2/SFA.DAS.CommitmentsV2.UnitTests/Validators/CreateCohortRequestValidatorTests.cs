@@ -108,6 +108,15 @@ namespace SFA.DAS.CommitmentsV2.UnitTests.Validators
             AssertValidationResult(request => request.LastName, new CreateCohortRequest { FirstName = firstname, LastName = lastname }, expectedValid);
         }
 
+        [TestCase(null, false)]
+        [TestCase("", false)]
+        [TestCase("123456789", false)]
+        [TestCase("Ten digits", false)]
+        public void Validate_Uln(string value, bool expectedValid)
+        {
+            AssertValidationResult(request => request.Uln, value, expectedValid);
+        }
+
         private void AssertValidationResult<T>(Expression<Func<CreateCohortRequest,T>> property, T value, bool expectedValid)
         {
             // Arrange

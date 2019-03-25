@@ -24,7 +24,7 @@ namespace SFA.DAS.CommitmentsV2.Validators
     {
         public CreateCohortRequestValidator()
         {
-            RuleFor(model => model).SetValidator(new UlnValidator());
+            RuleFor(model => model.Uln).UlnMustBeValid();
             RuleFor(model => model.Cost).CostMustBeValid();
             RuleFor(model => model.OriginatorReference).ReferenceMustBeValidIfSupplied();
             RuleFor(model => new Names(model)).NamesMustBeValid();
