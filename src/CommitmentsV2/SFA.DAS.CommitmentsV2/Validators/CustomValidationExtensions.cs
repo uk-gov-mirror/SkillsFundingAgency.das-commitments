@@ -1,5 +1,4 @@
-﻿using System;
-using FluentValidation;
+﻿using FluentValidation;
 using FluentValidation.Validators;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.Learners.Validators;
