@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Api.Controllers;
@@ -95,7 +96,8 @@ namespace SFA.DAS.CommitmentsV2.Api.UnitTests.Controllers
                 Mediator.Object,
                 UpdateDraftApprenticeshipMapper.Object,
                 GetDraftApprenticeshipMapper.Object,
-                AddDraftApprenticeshipMapper.Object);
+                AddDraftApprenticeshipMapper.Object,
+                Mock.Of<ILogger<DraftApprenticeshipController>>());
         }
 
         public DraftApprenticeshipControllerTestsFixture WithUpdateDraftApprenticeshipCommandResponse()
