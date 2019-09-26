@@ -47,29 +47,6 @@ namespace SFA.DAS.CommitmentsV2.UnitTests.Application.Commands
         }
     }
 
-    public class TestLogger : ILogger<AddCohortHandler>
-    {
-        private readonly List<(LogLevel logLevel, Exception exception, string message)> _logMessages = new List<(LogLevel logLevel, Exception exception, string message)>();
-
-        public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
-        {
-            _logMessages.Add((logLevel, exception, formatter(state, exception)));
-        }
-
-        public bool IsEnabled(LogLevel logLevel)
-        {
-            return true;
-        }
-
-        public IDisposable BeginScope<TState>(TState state)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool HasErrors => _logMessages.Any(l => l.logLevel == LogLevel.Error);
-        public bool HasInfo => _logMessages.Any(l => l.logLevel == LogLevel.Information);
-    }
-
     public class AddCohortCommandHandlerTestFixture
     {
         public ProviderCommitmentsDbContext Db { get; set; }
@@ -98,7 +75,7 @@ namespace SFA.DAS.CommitmentsV2.UnitTests.Application.Commands
                     It.IsAny<DraftApprenticeshipDetails>(), It.IsAny<UserInfo>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(commitment);
 
-            Logger = new TestLogger();
+            Logger = new TestLogger<AddCohortHandler>();
             UserInfo = new UserInfo();
         }
 
@@ -109,7 +86,7 @@ namespace SFA.DAS.CommitmentsV2.UnitTests.Application.Commands
 
         public Mock<ICohortDomainService> CohortDomainServiceMock { get; }
 
-        public TestLogger Logger { get; }
+        public TestLogger<AddCohortHandler> Logger { get; }
         public UserInfo UserInfo { get; }
 
         public AddCohortCommandHandlerTestFixture WithGeneratedHash(string hash)
