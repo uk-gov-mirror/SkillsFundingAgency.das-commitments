@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using SFA.DAS.CommitmentsV2.Types;
 
-namespace SFA.DAS.CommitmentsV2.Application.Queries.GetApprenticeshipUpdate
+namespace SFA.DAS.CommitmentsV2.Api.Types.Responses
 {
-    public class GetApprenticeshipUpdateQueryResult
+    public class GetApprenticeshipUpdatesResponse
     {
         public IReadOnlyCollection<ApprenticeshipUpdate> ApprenticeshipUpdates { get; set; }
 
@@ -12,7 +12,7 @@ namespace SFA.DAS.CommitmentsV2.Application.Queries.GetApprenticeshipUpdate
         {
             public long Id { get; set; }
             public long ApprenticeshipId { get; set; }
-            public Originator Originator { get; set; }
+            public Party OriginatingParty { get; set; }
             public string FirstName { get; set; }
             public string LastName { get; set; }
             public ProgrammeType? TrainingType { get; set; }
