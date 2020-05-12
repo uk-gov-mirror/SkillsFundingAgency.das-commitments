@@ -67,8 +67,7 @@ steps:
     displayName: 'VS test'
     inputs:
       testAssemblyVer2: |
-        **/bin/**/*Tests.dll
-        !**/CommitmentsV2/**
+        src\SFA.DAS.Commitments.AcademicYearEndProcessor.UnitTests\bin\Release\SFA.DAS.Commitments.AcademicYearEndProcessor.UnitTests.dll
     continueOnError: true
 
   - task: DotNetCoreCLI@2
