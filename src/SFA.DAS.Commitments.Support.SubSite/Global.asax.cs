@@ -29,10 +29,10 @@ namespace SFA.DAS.Commitments.Support.SubSite
             RouteConfig.RegisterRoutes(RouteTable.Routes);
 
 
-            var siteValidatorSettings = ioc.GetService<ISiteValidatorSettings>();
+            //var siteValidatorSettings = ioc.GetService<ISiteValidatorSettings>();
 
-            GlobalConfiguration.Configuration.MessageHandlers.Add(new TokenValidationHandler(siteValidatorSettings, logger));
-            GlobalFilters.Filters.Add(new TokenValidationFilter(siteValidatorSettings, logger));
+            //GlobalConfiguration.Configuration.MessageHandlers.Add(new TokenValidationHandler(siteValidatorSettings, logger));
+            //GlobalFilters.Filters.Add(new TokenValidationFilter(siteValidatorSettings, logger));
 
 
             logger.Info("Web role started");
