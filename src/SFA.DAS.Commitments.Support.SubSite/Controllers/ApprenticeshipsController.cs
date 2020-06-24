@@ -7,7 +7,7 @@ using System.Web.Mvc;
 
 namespace SFA.DAS.Commitments.Support.SubSite.Controllers
 {
-    [System.Web.Mvc.Authorize(Roles = "das-support-portal")]
+    //[System.Web.Mvc.Authorize(Roles = "das-support-portal")]
     public class ApprenticeshipsController : Controller
     {
         private readonly IApprenticeshipsOrchestrator _orchestrator;
