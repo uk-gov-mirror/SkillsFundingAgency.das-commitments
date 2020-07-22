@@ -504,6 +504,7 @@ Target "Building Acceptance Tests" (fun _ ->
 
     trace "Building Acceptance Tests"
     !! (".\**\*.AcceptanceTests.csproj")
+    -- (@".\Commitmentsv2\*.csproj")
       |> myBuildConfig "" "Rebuild"
       |> Log "AppBuild-Output: "
 
