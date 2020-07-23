@@ -496,7 +496,7 @@ Target "Build Projects" (fun _ ->
     trace "Building Projects"
 
     let projFiles = 
-      (!! ".\**\*.csproj").ButNot(".\Commitmentsv2\*.csproj")
+      (!! ".\**\*.csproj").ButNot("*Commitmentsv2*")
 
     printfn "%A" projFiles
 
