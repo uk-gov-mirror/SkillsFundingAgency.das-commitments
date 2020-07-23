@@ -5,6 +5,7 @@
 open Fake
 
 open Fake.IISHelper
+open System.Linq
 
 let findNuget = @"tools/nuget"
 
@@ -494,7 +495,12 @@ Target "Build Projects" (fun _ ->
 
     trace "Building Projects"
 
-    !! (@".\**\*.csproj")
+    let projFiles = 
+      (!! ".\**\*.csproj").ButNot(".\Commitmentsv2\*.csproj")
+
+    printfn "%A" projFiles
+
+    projFiles
       |> myBuildConfig "" "Rebuild"
       |> Log "AppBuild-Output: "
 
