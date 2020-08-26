@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using NServiceBus;
-using NServiceBus.Routing.Legacy;
 using SFA.DAS.CommitmentsV2.Configuration;
-using SFA.DAS.CommitmentsV2.Extensions;
-using SFA.DAS.CommitmentsV2.Messages.Commands;
 using SFA.DAS.Configuration;
 using SFA.DAS.Configuration.AzureTableStorage;
 using SFA.DAS.NServiceBus.Configuration;
@@ -46,15 +42,28 @@ namespace SFA.DAS.CommitmentsV2.MessageHandlers.TestHarness
                 t.Name.EndsWith("Event")
                 || t == typeof(RecordedAct1CompletionPayment));
 
-            if (isDevelopment)
+            //if (isDevelopment)
+            //{
+            //    endpointConfiguration.UseLearningTransport(s => s.AddRouting());
+            //}
+            //else
             {
-                endpointConfiguration.UseLearningTransport(s => s.AddRouting());
-            }
-            else
-            {
-                endpointConfiguration.UseAzureServiceBusTransport(config.SharedServiceBusEndpointUrl, s => s.AddRouting());
+               // endpointConfiguration.UseTransport<AzureServiceBusTransport>().ConnectionString("Endpoint=sb://testservicebusa.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=1vxMOUJc0WQADGiWT4cCVHDDRPrZz/441uW/KLpYX20=");
+                //endpointConfiguration.UseAzureServiceBusTransport("Endpoint=sb://testservicebusa.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=1vxMOUJc0WQADGiWT4cCVHDDRPrZz/441uW/KLpYX20=", s => s.AddRouting());
+               // endpointConfiguration.UseAzureServiceBusTransport("Endpoint=sb://das-test-shared-ns.servicebus.windows.net/", s => s.AddRouting());
+                // transport.UseForwardingTopology();
             }
 
+
+
+            var transport = endpointConfiguration.UseTransport<AzureServiceBusTransport>();
+            var ruleNameShortener = new RuleNameShortener();
+
+            //var tokenProvider = Microsoft.Azure.ServiceBus.Primitives.TokenProvider.CreateManagedServiceIdentityTokenProvider();
+            //transport.CustomTokenProvider(tokenProvider);
+            transport.ConnectionString("PutYourConnectionStringHere");
+            transport.RuleNameShortener(ruleNameShortener.Shorten);
+            transport.Transactions(TransportTransactionMode.ReceiveOnly);
             var endpoint = await Endpoint.Start(endpointConfiguration);
 
             var testHarness = new TestHarness(endpoint);
