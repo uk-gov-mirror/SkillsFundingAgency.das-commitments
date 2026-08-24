@@ -31,10 +31,10 @@ public class ApprovalsControllerTests
     public async Task CocApprovals_Processes_A_New_Request_Then_ReturnsResponse()
     {
         // Arrange
-        var request = _fixture.Create<CocApprovalRequest>();
+        var request = CreateCocApprovalRequest(true);
         var cocApprovalDetails = _fixture.Build<CocApprovalDetails>().Without(x => x.Apprenticeship).Create();
         var cocApprovalCommand = _fixture.Build<CocApprovalCommand>().With(x => x.CocApprovalDetails, cocApprovalDetails).With(x=>x.Action, AggregrationAction.CreateNew).Create();
-        var commandResult = _fixture.Create<CocApprovalResult>();
+        var commandResult = CreateCocResult();
 
         _mapper.Setup(m => m.Map<CocApprovalCommand>(request)).ReturnsAsync(cocApprovalCommand);
         _mediator.Setup(m => m.Send(cocApprovalCommand, It.IsAny<CancellationToken>())).ReturnsAsync(commandResult);
@@ -70,13 +70,13 @@ public class ApprovalsControllerTests
     [Test]
     public async Task CocApprovals_Processes_A_Request_And_Pending_Request_Exists_Then_ReturnsResponse()
     {
-        var request = _fixture.Create<CocApprovalRequest>();
+        var request = CreateCocApprovalRequest(true);
         var cocApprovalDetails = _fixture.Build<CocApprovalDetails>().Without(x => x.Apprenticeship).Create();
         var cocApprovalCommand = _fixture.Build<CocApprovalCommand>()
             .With(x => x.CocApprovalDetails, cocApprovalDetails)
-            .With(x=>x.PreviousApprovalRequestId, Guid.NewGuid())
+            .With(x => x.PreviousApprovalRequestId, Guid.NewGuid())
             .With(x => x.Action, AggregrationAction.SupersedePrevious).Create();
-        var commandResult = _fixture.Create<CocApprovalResult>();
+        var commandResult = CreateCocResult();
 
         _mapper.Setup(m => m.Map<CocApprovalCommand>(request)).ReturnsAsync(cocApprovalCommand);
         _mediator.Setup(m => m.Send(cocApprovalCommand, It.IsAny<CancellationToken>())).ReturnsAsync(commandResult);
@@ -91,6 +91,37 @@ public class ApprovalsControllerTests
         var jsonResult = result as CreatedResult;
         jsonResult.StatusCode.Should().Be(201);
         jsonResult.Value.Should().BeEquivalentTo(commandResult.Items.Select(x => new { ChangeType = x.Field.GetEnumDescription(), ApprovalStatus = "EmployerApprovalRequested", x.Reason }).ToList());
+    }
+
+    [Test]
+    public async Task CocApprovals_Processes_A_Request_And_Pending_Request_Exists_Then_ReturnsResponseAndDoBAsAutoApproved()
+    {
+        var request = CreateCocApprovalRequest(false);
+        var cocApprovalDetails = _fixture.Build<CocApprovalDetails>().Without(x => x.Apprenticeship).Create();
+        var cocApprovalCommand = _fixture.Build<CocApprovalCommand>()
+            .With(x => x.CocApprovalDetails, cocApprovalDetails)
+            .With(x=>x.PreviousApprovalRequestId, Guid.NewGuid())
+            .With(x => x.Action, AggregrationAction.SupersedePrevious).Create();
+        var commandResult = CreateCocResult();
+
+        _mapper.Setup(m => m.Map<CocApprovalCommand>(request)).ReturnsAsync(cocApprovalCommand);
+        _mediator.Setup(m => m.Send(cocApprovalCommand, It.IsAny<CancellationToken>())).ReturnsAsync(commandResult);
+        commandResult.Items.ForEach(i => i.Status = CocApprovalItemStatus.Pending);
+
+        // Act
+        var result = await _controller.PostApprovals(request.LearningKey, request);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeOfType<CreatedResult>();
+        var jsonResult = result as CreatedResult;
+        jsonResult.StatusCode.Should().Be(201);
+        var response = jsonResult.Value as List<ApprovalFieldChange>;  
+        response.Should().NotBeNull();
+        response.Count.Should().Be(3);
+        response.Should().ContainSingle(x => x.ChangeType == "TNP1" && x.ApprovalStatus == "EmployerApprovalRequested" && x.Reason == null);
+        response.Should().ContainSingle(x => x.ChangeType == "TNP2" && x.ApprovalStatus == "EmployerApprovalRequested" && x.Reason == null);
+        response.Should().ContainSingle(x => x.ChangeType == "DoB" && x.ApprovalStatus == "AutoApproved" && x.Reason == null);
     }
 
     [Test]
@@ -116,5 +147,80 @@ public class ApprovalsControllerTests
         jsonResult.StatusCode.Should().Be(200);
         jsonResult.Value.Should().BeEquivalentTo(request.Changes.Select(x => new { x.ChangeType, ApprovalStatus = "AutoApproved", Reason = (string)null }).ToList());
     }
-}
 
+    private CocApprovalRequest CreateCocApprovalRequest(bool withOnlyTNPValues)
+    {
+        var request = new CocApprovalRequest
+        {
+            LearningKey = Guid.NewGuid(),
+            ApprenticeshipId = 12345,
+            LearningType = "Standard",
+            UKPRN = "12345678",
+            ULN = "87654321",
+            ApprovedUri = "http://example.com/approval",
+            Changes = new List<CocApprovalFieldChange>
+            {
+                new CocApprovalFieldChange
+                {
+                    ChangeType = "TNP1",
+                    Data = new CocData
+                    {
+                        Old = "1000",
+                        New = "2000",
+                        EffectiveFromDate = DateTime.UtcNow.AddDays(1)
+                    }
+                },
+                new CocApprovalFieldChange
+                {
+                    ChangeType = "TNP2",
+                    Data = new CocData
+                    {
+                        Old = "3000",
+                        New = "4000",
+                        EffectiveFromDate = DateTime.UtcNow.AddDays(2)
+                    }
+                },
+                new CocApprovalFieldChange
+                {
+                    ChangeType = "DoB",
+                    Data = new CocData
+                    {
+                        Old = "1999-01-01",
+                        New = "1998-02-01",
+                        EffectiveFromDate = DateTime.UtcNow.AddDays(2)
+                    }
+                }
+            }
+        };
+
+        if(withOnlyTNPValues)
+        {
+            request.Changes = request.Changes.Where(x => x.ChangeType == "TNP1" || x.ChangeType == "TNP2").ToList();
+        }
+
+        return request;
+    }
+
+    private CocApprovalResult CreateCocResult()
+    {
+        return new CocApprovalResult
+        {
+            Status = CocApprovalResultStatus.Pending,
+            Items = new List<CocUpdateResult>
+            {
+                new CocUpdateResult
+                {
+                    Field = CocChangeField.TNP1,
+                    Status = CocApprovalItemStatus.Pending,
+                    Reason = null
+                },
+                new CocUpdateResult
+                {
+                    Field = CocChangeField.TNP2,
+                    Status = CocApprovalItemStatus.Pending,
+                    Reason = null
+                }
+            }
+        };
+    }
+}

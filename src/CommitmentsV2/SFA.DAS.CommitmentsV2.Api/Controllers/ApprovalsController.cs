@@ -26,32 +26,39 @@ public class ApprovalsController(IMediator mediator, IModelMapper modelMapper, I
         logger.LogInformation("PostApprovals completed Returning status of {0}", result?.Status);
         if (command.Action == AggregrationAction.CancelPrevious)
         {
-            return Ok(MapToApprovalFieldChangeList(request.Changes));
+            return Ok(MapToApprovalFieldChangeList(new List<CocUpdateResult>(), request.Changes).ToList());
+        }
+            
+        return Created("", MapToApprovalFieldChangeList(result.Items, request.Changes).ToList());
+    }
+
+    private IEnumerable<ApprovalFieldChange> MapToApprovalFieldChangeList(List<CocUpdateResult> items, List<CocApprovalFieldChange> changes)
+    {
+        
+        foreach(var item in items)
+        {
+            yield return new ApprovalFieldChange
+            {
+                ChangeType = item.Field.GetEnumDescription(),
+                ApprovalStatus = GetApprovalStatus(item.Status),
+                Reason = item.Reason
+            };
         }
 
-        return Created("", MapToApprovalFieldChangeList(result.Items));
-    }
-
-    private List<ApprovalFieldChange> MapToApprovalFieldChangeList(List<CocUpdateResult> items)
-    {
-        return items.Select(x => new ApprovalFieldChange
+        foreach (var change in changes)
         {
-            ChangeType = x.Field.GetEnumDescription(),
-            ApprovalStatus = GetApprovalStatus(x.Status),
-            Reason = x.Reason
-        }).ToList();
+            if (items.Any(x => x.Field.GetEnumDescription() == change.ChangeType))
+            {
+                continue;
+            }
+            yield return new ApprovalFieldChange
+            {
+                ChangeType = change.ChangeType,
+                ApprovalStatus = CocApprovalItemStatus.AutoApproved.GetEnumDescription(),
+                Reason = null
+            };
+        }
     }
-
-    private List<ApprovalFieldChange> MapToApprovalFieldChangeList(List<CocApprovalFieldChange> changes)
-    {
-        return changes.Select(x => new ApprovalFieldChange
-        {
-            ChangeType = x.ChangeType,
-            ApprovalStatus = CocApprovalItemStatus.AutoApproved.GetEnumDescription(),
-            Reason = null
-        }).ToList();
-    }
-
 
     private string GetApprovalStatus(CocApprovalItemStatus status)
     {
