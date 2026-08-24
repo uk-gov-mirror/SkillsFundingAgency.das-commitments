@@ -34,7 +34,6 @@ public class ApprovalsController(IMediator mediator, IModelMapper modelMapper, I
 
     private IEnumerable<ApprovalFieldChange> MapToApprovalFieldChangeList(List<CocUpdateResult> items, List<CocApprovalFieldChange> changes)
     {
-        
         foreach(var item in items)
         {
             yield return new ApprovalFieldChange
