@@ -112,7 +112,7 @@ public class CocApprovalCommandHandlerTests
 
         // Assert
         await act.Should().ThrowAsync<ArgumentNullException>()
-            .WithParameterName("command.PreviousApprovalRequestId");
+            .WithParameterName("PreviousApprovalRequestId");
 
         _cocApprovalRules.Verify(r => r.DetermineApprovalState(It.IsAny<CocApprovalDetails>()), Times.Never);
     }
@@ -199,7 +199,7 @@ public class CocApprovalCommandHandlerTests
 
         // Assert
         await act.Should().ThrowAsync<ArgumentNullException>()
-            .WithParameterName("command.PreviousApprovalRequestId");
+            .WithParameterName("PreviousApprovalRequestId");
 
         _cocApprovalRules.Verify(r => r.DetermineApprovalState(It.IsAny<CocApprovalDetails>()), Times.Never);
     }
