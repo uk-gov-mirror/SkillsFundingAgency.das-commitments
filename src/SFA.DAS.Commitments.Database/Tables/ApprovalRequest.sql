@@ -10,6 +10,7 @@
 	[UKPRN] [nvarchar](8) NOT NULL,
 	[ULN] [nvarchar](10) NOT NULL,
     [Reason] NVARCHAR(250) NULL, 
+    [EmployerSeenAlert] BIT NULL, 
     CONSTRAINT [PK_ApprovalRequest] PRIMARY KEY CLUSTERED ([Id] ASC),
 )
 GO
