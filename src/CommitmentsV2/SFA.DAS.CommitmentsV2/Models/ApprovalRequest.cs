@@ -18,7 +18,6 @@ public class ApprovalRequest
     public CocApprovalResultStatus? Status { get; set; }
     public virtual ICollection<ApprovalFieldRequest> Items { get; set; }
     public virtual Apprenticeship Apprenticeship { get; set; }
-    public bool? EmployerSeenAlert { get; set; }
     public DateTime? EmployerAcknowledgedAt { get; set; }
     public string EmployerAcknowledgedBy { get; set; }
 }
