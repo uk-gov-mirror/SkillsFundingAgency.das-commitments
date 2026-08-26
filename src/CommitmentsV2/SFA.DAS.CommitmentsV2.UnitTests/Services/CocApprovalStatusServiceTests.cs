@@ -95,7 +95,7 @@ public class CocApprovalStatusServiceTests
             TNP2 = new CocUpdate<int> { Old = 102, New = 202 }
         };
 
-        var apprenticeship = new Apprenticeship { Cost = 100 };
+        var apprenticeship = new Apprenticeship { Cost = 202 };
 
         var result = _service.DetermineCocUpdateStatuses(updates, apprenticeship);
 
@@ -115,7 +115,7 @@ public class CocApprovalStatusServiceTests
             TNP2 = new CocUpdate<int> { Old = 102, New = 100 }
         };
 
-        var apprenticeship = new Apprenticeship { Cost = 100 };
+        var apprenticeship = new Apprenticeship { Cost = 202 };
 
         var result = _service.DetermineCocUpdateStatuses(updates, apprenticeship);
 
@@ -159,7 +159,7 @@ public class CocApprovalStatusServiceTests
             TNP2 = new CocUpdate<int> { Old = 102, New = 81000 }
         };
 
-        var apprenticeship = new Apprenticeship { Cost = 100 };
+        var apprenticeship = new Apprenticeship { Cost = 202 };
 
         var result = _service.DetermineCocUpdateStatuses(updates, apprenticeship);
 
@@ -177,7 +177,7 @@ public class CocApprovalStatusServiceTests
             TNP2 = new CocUpdate<int> { Old = 102, New = 81000 }
         };
 
-        var apprenticeship = new Apprenticeship { Cost = 100 };
+        var apprenticeship = new Apprenticeship { Cost = 202 };
 
         var result = _service.DetermineCocUpdateStatuses(updates, apprenticeship);
 
