@@ -41,7 +41,7 @@ public class ApprovalsControllerTests
         commandResult.Items.Where(x=>x.Status == CocApprovalItemStatus.Pending).ToList().ForEach(i => i.Status = CocApprovalItemStatus.AutoApproved);
 
         // Act
-        var result = await _controller.PostApprovals(request.LearningKey, request);
+        var result = await _controller.PutApprovals(request.LearningKey, request);
 
         // Assert
         result.Should().NotBeNull();
@@ -58,7 +58,7 @@ public class ApprovalsControllerTests
         var request = _fixture.Create<CocApprovalRequest>();
 
         // Act
-        var result = await _controller.PostApprovals(Guid.NewGuid(), request);
+        var result = await _controller.PutApprovals(Guid.NewGuid(), request);
 
         // Assert
         result.Should().NotBeNull();
@@ -83,7 +83,7 @@ public class ApprovalsControllerTests
         commandResult.Items.ForEach(i => i.Status = CocApprovalItemStatus.Pending);
 
         // Act
-        var result = await _controller.PostApprovals(request.LearningKey, request);
+        var result = await _controller.PutApprovals(request.LearningKey, request);
 
         // Assert
         result.Should().NotBeNull();
@@ -109,7 +109,7 @@ public class ApprovalsControllerTests
         commandResult.Items.ForEach(i => i.Status = CocApprovalItemStatus.Pending);
 
         // Act
-        var result = await _controller.PostApprovals(request.LearningKey, request);
+        var result = await _controller.PutApprovals(request.LearningKey, request);
 
         // Assert
         result.Should().NotBeNull();
@@ -138,7 +138,7 @@ public class ApprovalsControllerTests
         _mediator.Setup(m => m.Send(cocApprovalCommand, It.IsAny<CancellationToken>())).ReturnsAsync(commandResult);
 
         // Act
-        var result = await _controller.PostApprovals(request.LearningKey, request);
+        var result = await _controller.PutApprovals(request.LearningKey, request);
 
         // Assert
         result.Should().NotBeNull();

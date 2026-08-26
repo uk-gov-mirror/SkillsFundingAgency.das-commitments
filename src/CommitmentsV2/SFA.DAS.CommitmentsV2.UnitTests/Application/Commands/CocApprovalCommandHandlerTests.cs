@@ -72,9 +72,6 @@ public class CocApprovalCommandHandlerTests
         await _dbContext.ApprovalRequests.AddAsync(existing);
         await _dbContext.SaveChangesAsync();
 
-        // Detach so state tracking reflects a fresh Find + Remove, not the Add above
-        _dbContext.Entry(existing).State = EntityState.Detached;
-
         var command = new CocApprovalCommand
         {
             Action = AggregrationAction.CancelPrevious,
@@ -89,10 +86,7 @@ public class CocApprovalCommandHandlerTests
         result.Status.Should().Be(CocApprovalResultStatus.Cancelled);
         result.Items.Should().NotBeNull().And.BeEmpty();
 
-        var trackedEntry = _dbContext.ChangeTracker.Entries<ApprovalRequest>()
-            .FirstOrDefault(e => e.Entity.Id == previousId);
-        trackedEntry.Should().NotBeNull();
-        trackedEntry!.State.Should().Be(EntityState.Deleted);
+        existing.Status.Should().Be(CocApprovalResultStatus.Cancelled);
 
         _cocApprovalRules.Verify(r => r.DetermineApprovalState(It.IsAny<CocApprovalDetails>()), Times.Never);
     }
@@ -131,7 +125,7 @@ public class CocApprovalCommandHandlerTests
         Func<Task> act = async () => await _sut.Handle(command, CancellationToken.None);
 
         // Assert
-        await act.Should().ThrowAsync<ArgumentNullException>();
+        await act.Should().ThrowAsync<KeyNotFoundException>();
 
         _cocApprovalRules.Verify(r => r.DetermineApprovalState(It.IsAny<CocApprovalDetails>()), Times.Never);
     }

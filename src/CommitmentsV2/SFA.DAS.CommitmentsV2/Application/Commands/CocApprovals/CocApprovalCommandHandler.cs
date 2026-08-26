@@ -32,7 +32,12 @@ public class CocApprovalCommandHandler(
                 throw new ArgumentNullException(nameof(command.PreviousApprovalRequestId));
             }
             var existingApprovalRequest = await db.ApprovalRequests.FindAsync(command.PreviousApprovalRequestId.Value);
-            db.ApprovalRequests.Remove(existingApprovalRequest);
+            if(existingApprovalRequest == null)
+            {
+                throw new KeyNotFoundException($"Could not find PreviousApprovalRequestId {command.PreviousApprovalRequestId}");
+            }
+            MarkAsCancelled(db, existingApprovalRequest);
+
             return new CocApprovalResult
             {
                 Status = CocApprovalResultStatus.Cancelled,
@@ -66,4 +71,14 @@ public class CocApprovalCommandHandler(
         
         db.ApprovalRequests.Update(existingApprovalRequest);
     }
+
+    private static void MarkAsCancelled(ProviderCommitmentsDbContext db, ApprovalRequest existingApprovalRequest)
+    {
+        var updated = DateTime.UtcNow;
+        existingApprovalRequest.Status = CocApprovalResultStatus.Cancelled;
+        existingApprovalRequest.Updated = updated;
+
+        db.ApprovalRequests.Update(existingApprovalRequest);
+    }
+
 }

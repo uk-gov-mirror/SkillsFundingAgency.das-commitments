@@ -12,8 +12,8 @@ namespace SFA.DAS.CommitmentsV2.Api.Controllers;
 [ApiController]
 public class ApprovalsController(IMediator mediator, IModelMapper modelMapper, ILogger<ApprovalsController> logger) : ControllerBase
 {
-    [HttpPost("{learningKey}")]
-    public async Task<ActionResult> PostApprovals([FromRoute] Guid learningKey, [FromBody] CocApprovalRequest request)
+    [HttpPut("{learningKey}")]
+    public async Task<ActionResult> PutApprovals([FromRoute] Guid learningKey, [FromBody] CocApprovalRequest request)
     {
         if (learningKey != request.LearningKey)
         {
