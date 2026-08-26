@@ -258,6 +258,7 @@ public class ApprovedLearningUpdatedEventHandlerTestsFixture
         updatedApprenticeship.DateOfBirth.Should().Be(ParseDate(GetValue(ApprovedLearnerChangeType.DOB)));
         updatedApprenticeship.StartDate.Should().Be(ParseFirstDayOfMonth(ParseDate(GetValue(ApprovedLearnerChangeType.PlannedStartDate))));
         updatedApprenticeship.EndDate.Should().Be(ParseFirstDayOfMonth(ParseDate(GetValue(ApprovedLearnerChangeType.PlannedEndDate))));
+        updatedApprenticeship.ActualStartDate.Should().Be(ParseDate(GetValue(ApprovedLearnerChangeType.PlannedStartDate)));
     }
 
     private string GetValue(ApprovedLearnerChangeType changeType)

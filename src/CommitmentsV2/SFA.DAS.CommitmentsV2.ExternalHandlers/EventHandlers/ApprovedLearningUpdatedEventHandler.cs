@@ -84,6 +84,7 @@ public class ApprovedLearningUpdatedEventHandler(
                     }
 
                     apprentice.StartDate = ParseFirstDayOfMonth(ParseDate(change.Data.New)) ?? apprentice.StartDate;
+                    apprentice.ActualStartDate = parsedStartDate;
                     break;
 
                 case ApprovedLearnerChangeType.PlannedEndDate:
