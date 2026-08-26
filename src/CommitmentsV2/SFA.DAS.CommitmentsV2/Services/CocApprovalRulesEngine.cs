@@ -92,7 +92,7 @@ public class CocApprovalRulesEngine(
 
         var sendEmailCommand = new SendEmailToEmployerCommand(
             accountId,
-            "EmployerAutoApprovalNotification",
+            "EmployerAutoApprovedNotification",
             new Dictionary<string, string>
             {
                 {"provider_name", apprenticeship.Cohort.Provider.Name},
@@ -105,7 +105,7 @@ public class CocApprovalRulesEngine(
             "Name"
             );
 
-        logger.LogInformation("Sending EmployerAutoApprovalNotification Email for id {0} hashed as {1}", apprenticeship.Id, encodedApprenticeshipId);
+        logger.LogInformation("Sending EmployerAutoApprovedNotification Email for id {0} hashed as {1}", apprenticeship.Id, encodedApprenticeshipId);
         await messageSession.Send(sendEmailCommand);
     }
 }
