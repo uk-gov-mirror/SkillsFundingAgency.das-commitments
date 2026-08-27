@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
@@ -84,6 +85,8 @@ public class ApprovedLearningUpdatedEventHandlerTestsFixture
     private Mock<IMessageHandlerContext> _mockContext;
     public UnitOfWorkContext UnitOfWorkContext { get; set; }
     public long apprenticeshipId { get; set; }
+
+    public string format { get; set; } = "yyyy-MM-dd";
 
     public ApprovedLearningUpdatedEventHandlerTestsFixture()
     {
@@ -172,9 +175,9 @@ public class ApprovedLearningUpdatedEventHandlerTestsFixture
                         }
                    },
 
-                   new() { ChangeType = "DOB", Data = new ApprenticeshipData { Old = DateTime.Now.AddYears(-20).ToShortDateString(), New = DateTime.Now.AddYears(-1).ToShortDateString()} },
-                   new() { ChangeType = "PlannedStartDate", Data = new ApprenticeshipData { Old = DateTime.Now.AddMonths(2).ToShortDateString(), New = DateTime.Now.AddMonths(4).ToShortDateString()} },
-                   new() { ChangeType = "PlannedEndDate", Data = new ApprenticeshipData { Old = DateTime.Now.AddMonths(8).ToShortDateString(), New = DateTime.Now.AddMonths(11).ToShortDateString()} }
+                   new() { ChangeType = "DOB", Data = new ApprenticeshipData { Old = DateTime.Now.AddYears(-20).ToString(format), New = DateTime.Now.AddYears(-1).ToString(format)} },
+                   new() { ChangeType = "PlannedStartDate", Data = new ApprenticeshipData { Old = DateTime.Now.AddMonths(2).ToString(format), New = DateTime.Now.AddMonths(4).ToString(format)} },
+                   new() { ChangeType = "PlannedEndDate", Data = new ApprenticeshipData { Old = DateTime.Now.AddMonths(8).ToString(format), New = DateTime.Now.AddMonths(11).ToString(format)} }
             ]
         };
         return this;
@@ -213,7 +216,7 @@ public class ApprovedLearningUpdatedEventHandlerTestsFixture
                      ChangeType = "DOB",
                      Data = new ApprenticeshipData
                      {
-                         Old = DateTime.UtcNow.ToShortDateString(),
+                         Old = DateTime.UtcNow.ToString(format),
                          New = "20!6-01-01"
                      }
                  }]
@@ -234,7 +237,7 @@ public class ApprovedLearningUpdatedEventHandlerTestsFixture
                      ChangeType = "PlannedStartDate",
                      Data = new ApprenticeshipData
                      {
-                         Old = DateTime.UtcNow.ToShortDateString(),
+                         Old = DateTime.UtcNow.ToString(format),
                          New = "20!6-01-01"
                      }
                  }]
@@ -255,7 +258,7 @@ public class ApprovedLearningUpdatedEventHandlerTestsFixture
         updatedApprenticeship.FirstName.Should().Be(GetValue(ApprovedLearnerChangeType.Firstname));
         updatedApprenticeship.LastName.Should().Be(GetValue(ApprovedLearnerChangeType.Surname));
         updatedApprenticeship.Email.Should().Be(GetValue(ApprovedLearnerChangeType.Email));
-        updatedApprenticeship.DateOfBirth.Should().Be(ParseDate(GetValue(ApprovedLearnerChangeType.DOB)));
+        updatedApprenticeship.DateOfBirth.Value.Date.Should().Be(ParseDate(GetValue(ApprovedLearnerChangeType.DOB)));
         updatedApprenticeship.StartDate.Should().Be(ParseFirstDayOfMonth(ParseDate(GetValue(ApprovedLearnerChangeType.PlannedStartDate))));
         updatedApprenticeship.EndDate.Should().Be(ParseFirstDayOfMonth(ParseDate(GetValue(ApprovedLearnerChangeType.PlannedEndDate))));
         updatedApprenticeship.ActualStartDate.Should().Be(ParseDate(GetValue(ApprovedLearnerChangeType.PlannedStartDate)));
@@ -290,7 +293,7 @@ public class ApprovedLearningUpdatedEventHandlerTestsFixture
 
     public DateTime? ParseDate(string dateString)
     {
-        if (DateTime.TryParse(dateString, out var parsedDate))
+        if (DateTime.TryParseExact(dateString, "yyyy-MM-dd",CultureInfo.InvariantCulture, DateTimeStyles.None,out var parsedDate))
         {
             return parsedDate;
         }

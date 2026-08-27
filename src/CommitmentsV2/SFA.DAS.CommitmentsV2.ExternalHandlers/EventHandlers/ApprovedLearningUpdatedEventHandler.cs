@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -32,8 +33,6 @@ public class ApprovedLearningUpdatedEventHandler(
                 message.ApprenticeshipId, message.LearningKey);
             var db = dbContext.Value;
             var apprentice = await db.Apprenticeships
-                .Include(a => a.Cohort)
-                    .ThenInclude(c => c.Provider)
                 .SingleOrDefaultAsync(t => t.Id == message.ApprenticeshipId);
 
             if (apprentice == null)
@@ -83,7 +82,7 @@ public class ApprovedLearningUpdatedEventHandler(
                         return;
                     }
 
-                    apprentice.StartDate = ParseFirstDayOfMonth(ParseDate(change.Data.New)) ?? apprentice.StartDate;
+                    apprentice.StartDate = ParseFirstDayOfMonth(parsedStartDate);
                     apprentice.ActualStartDate = parsedStartDate;
                     break;
 
@@ -129,7 +128,7 @@ public class ApprovedLearningUpdatedEventHandler(
             return null;
         }
 
-        if (DateTime.TryParse(dateString, out var parsedDate))
+        if (DateTime.TryParseExact(dateString, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
         {
             return parsedDate;
         }
