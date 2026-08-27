@@ -10,7 +10,7 @@ public class AcknowledgeInvalidIlrChangesCommandHandler(
     ICurrentDateTime currentDateTime)
     : IRequestHandler<AcknowledgeInvalidIlrChangesCommand>
 {
-    public const string SelectDeleteMessage = "Select if you would like to delete this notification and alert";
+    public const string SelectDeleteMessage = "Select if you would like to delete this alert";
 
     public async Task Handle(AcknowledgeInvalidIlrChangesCommand command, CancellationToken cancellationToken)
     {
