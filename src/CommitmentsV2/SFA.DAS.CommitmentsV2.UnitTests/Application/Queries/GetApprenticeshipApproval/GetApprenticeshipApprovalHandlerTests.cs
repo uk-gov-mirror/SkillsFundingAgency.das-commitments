@@ -23,7 +23,7 @@ public class GetApprenticeshipApprovalHandlerTests
 
         result.Should().NotBeNull();
         result.ApprenticeshipId.Should().Be(_fixture.ApprenticeshipId);
-        result.ApprenticeshipStatus.Should().Be(_fixture.ApprenticeshipStatus);
+        result.ApprenticeshipStatus.Should().Be(_fixture.Apprenticeship.GetApprenticeshipStatus(null));
         result.ApprovalRequestId.Should().Be(_fixture.ApprovalRequestId);
         result.AccountLegalEntityId.Should().Be(_fixture.AccountLegalEntityId);
         result.AccountLegalEntityName.Should().Be(_fixture.AccountLegalEntity.Name);
