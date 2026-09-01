@@ -86,7 +86,7 @@ public class CocApprovalRulesEngine(
 
     private async Task SendEmployerAutoApprovalNotification(Apprenticeship apprenticeship)
     {
-        var accountId = apprenticeship.Cohort.AccountLegalEntity.AccountId;
+        var accountId = apprenticeship.Cohort.EmployerAccountId;
         var encodedApprenticeshipId = encodingService.Encode(apprenticeship.Id, EncodingType.ApprenticeshipId);
         var encodedAccountId = encodingService.Encode(accountId, EncodingType.AccountId);
 
