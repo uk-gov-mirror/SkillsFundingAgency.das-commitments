@@ -48,13 +48,9 @@ public class UpdateApprovalRequestAlertAcknowledgeCommandHandlerTestsFixture
     public Mock<ProviderCommitmentsDbContext> Db { get; set; }
     public IRequestHandler<UpdateApprovalRequestAlertAcknowledgeCommand> Handler { get; set; }
     public long ApprenticeshipId { get; set; }
-
     public Guid ApprovalRequestId { get; set; }
-
     public long ApprenticeshipId2 { get; set; }
-
     public Guid ApprovalRequestId2 { get; set; }
-
     public Fixture Fixture { get; set; }
 
     public UpdateApprovalRequestAlertAcknowledgeCommandHandlerTestsFixture()
