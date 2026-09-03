@@ -206,7 +206,7 @@ components:
           description: The new value to be applied
           type: string
 
-        approvalsResult:
+    approvalsResult:
       type: object
       description: >
         The result of evaluating this approval request, split to mirror
